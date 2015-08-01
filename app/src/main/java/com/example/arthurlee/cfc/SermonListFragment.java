@@ -158,7 +158,12 @@ public class SermonListFragment extends ListFragment
                     i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
                     i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
                     i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+                    i.putExtra(MediaActivity.EXTRA_SERMON_UUID, s.getId().toString());
                     startActivity(i);
+
+                    //Log.d("UUID of sermon", s.getId().toString());
+                    //getAllowEnterTransitionOverlap(R.anim.abc_slide_in_bottom);
+                    //getActivity().overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
 
                 }
             });

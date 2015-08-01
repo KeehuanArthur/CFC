@@ -101,4 +101,6 @@ public class Sermon
     public void setScripture(String scripture) {
         mScripture = scripture;
     }
+
+
 }

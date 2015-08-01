@@ -1,11 +1,16 @@
 package com.example.arthurlee.cfc;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Created by arthurlee on 7/29/15.
@@ -15,14 +20,24 @@ import java.io.IOException;
 public class SermonPlayer extends Object {
 
     private static SermonPlayer sSermonPlayer;
-    private Context mAppContext;
+    private static Context sAppContext;
     private MediaPlayer mMediaPlayer;
     private String mp3Url;
+    private UUID curUUID;
+    private SeekBar mSeekBar;
+    private Handler mHandler = new Handler();
+    Runnable updateSeekbar;
+    int temp = 0;
+
+    public MediaPlayer getMediaPlayer() {
+        return mMediaPlayer;
+    }
 
     //private constructor for singleton
     private SermonPlayer(Context appContext)
     {
-        mAppContext = appContext;
+        sAppContext = appContext;
+        //curUUID = UUID.randomUUID();
         mMediaPlayer = new MediaPlayer();
     }
 
@@ -33,62 +48,110 @@ public class SermonPlayer extends Object {
         if(sSermonPlayer == null)
         {
             sSermonPlayer = new SermonPlayer(c);
+            Log.d("Constructor called", "Constructor called------------------------");
         }
-
+        sAppContext = c;
         return sSermonPlayer;
     }
 
 
     //this is called only when you open a new sermon. This is not to be used to restart sermon
     //to play/pause use pauseplay method
-    public void play(String url)
-    {
-        mp3Url = url;
-        stop();
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        String fullUrl = "http://s3.amazonaws.com/awctestbucket1/" + url;
+    //this is more like a init/setup function
+    public void play(String url, UUID id, SeekBar seekBar)
+        {
+            mSeekBar = seekBar;
 
-        try {
-            mMediaPlayer.setDataSource(fullUrl);
-            //mPlayer.setOnBufferingUpdateListener(this);
-            //mPlayer.setOnPreparedListener(this);
-            //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
-            mMediaPlayer.prepareAsync();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block///
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            //check if you are clicking the same sermon. If you clicked the sermon that is playing
+            //already, don't restart the sermon
+            if(curUUID != id) {
+
+                Log.d("UUID parameter", id.toString());
+                //Log.d("UUID in Singleton", curUUID.toString());
 
 
-        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-                //mDuration = mMediaPlayer.getDuration();
-            }
 
-        });
-
-
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void onCompletion(MediaPlayer mp) {
+                sSermonPlayer.curUUID = id;
+                mp3Url = url;
                 stop();
-                //make it start from beginning
-            }
-        });
+                mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                String fullUrl = "http://s3.amazonaws.com/awctestbucket1/" + url;
 
+                try {
+                    mMediaPlayer.setDataSource(fullUrl);
+                    //mPlayer.setOnBufferingUpdateListener(this);
+                    //mPlayer.setOnPreparedListener(this);
+                    //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
+                    mMediaPlayer.prepareAsync();
+                } catch (IllegalArgumentException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (SecurityException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    // TODO Auto-generated catch block///
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+
+                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
+                        //mDuration = mMediaPlayer.getDuration();
+
+                        mSeekBar.setMax(getMediaPlayer().getDuration());
+                        //Log.d("seekbar max------------", Integer.toString(getMediaPlayer().getDuration()));
+
+
+                        updateProgress();
+
+                    }
+
+                });
+
+                updateSeekbar = new Runnable() {
+                    @Override
+                    public void run() {
+                        updateProgress();
+                    }
+                };
+
+
+                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mp) {
+                        stop();
+                        //make it start from beginning
+                    }
+                });
+            }
     }
 
+
+    //check the application context
+    public void updateProgress()
+    {
+        ((Activity)sAppContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+            }
+        });
+
+        temp+=5;
+        //Log.d("progress update", "attempted--------------------------"+ Integer.toString(mMediaPlayer.getCurrentPosition())
+        //        +"/"+Integer.toString(mMediaPlayer.getDuration()));
+
+
+        //update seekbar every 5 seconds
+        mHandler.postDelayed(updateSeekbar, 5000);
+
+    }
 
     public void stop()
     {
@@ -114,8 +177,31 @@ public class SermonPlayer extends Object {
         }
         else
         {
-            play(mp3Url);
+            play(mp3Url, curUUID, mSeekBar);
         }
     }
+
+
+
+    public int getCurrentPosition()
+    {
+        if(mMediaPlayer != null)
+        {
+
+            return mMediaPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
+
+    public int getMaxPosition()
+    {
+        if(mMediaPlayer != null)
+        {
+            return mMediaPlayer.getDuration();
+        }
+        return 1;
+    }
+
+
 
 }
