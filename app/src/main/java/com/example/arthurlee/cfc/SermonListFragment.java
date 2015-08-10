@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -126,6 +127,18 @@ public class SermonListFragment extends ListFragment
 
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+        Sermon s = ((SermonAdapter)getListAdapter()).getItem(position);
+        Intent i = new Intent(getActivity(), MediaActivity.class);
+        i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
+        i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
+        i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
+        i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+        i.putExtra(MediaActivity.EXTRA_SERMON_UUID, s.getId().toString());
+        startActivity(i);
+    }
 
 
 
@@ -161,29 +174,11 @@ public class SermonListFragment extends ListFragment
             TextView dateTextView = (TextView)convertView.findViewById(R.id.sermon_list_item_dateTextView);
             dateTextView.setText(s.getSDate());
 
+            TextView passageTextView = (TextView)convertView.findViewById(R.id.sermon_list_item_passage);
+            passageTextView.setText(s.getScripture());
 
             //buffering is called secondary progress
 
-
-
-            mPlayButton = (Button)convertView.findViewById(R.id.sermon_list_item_playbutton);
-            mPlayButton.setOnClickListener(new View.OnClickListener(){
-                public void onClick(View convertView)
-                {
-                    Intent i = new Intent(getActivity(), MediaActivity.class);
-                    i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
-                    i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
-                    i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
-                    i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
-                    i.putExtra(MediaActivity.EXTRA_SERMON_UUID, s.getId().toString());
-                    startActivity(i);
-
-                    //Log.d("UUID of sermon", s.getId().toString());
-                    //getAllowEnterTransitionOverlap(R.anim.abc_slide_in_bottom);
-                    //getActivity().overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
-
-                }
-            });
 
             /*
             DateFormat simpleDate = new SimpleDateFormat("MMM dd, yyyy");

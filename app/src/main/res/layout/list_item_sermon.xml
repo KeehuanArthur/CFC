@@ -45,57 +45,27 @@
                 android:paddingTop="10dp"
                 android:text="Pastor Min"
                 />
+            <TextView
+                android:id="@+id/sermon_list_item_passage"
+                android:layout_below="@id/sermon_list_item_pastorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="25dp"
+                android:text="Passage"
+                />
 
             <TextView
                 android:id="@+id/sermon_list_item_dateTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/sermon_list_item_pastorName"
+                android:layout_below="@+id/sermon_list_item_passage"
                 android:paddingLeft="25dp"
                 android:paddingRight="4dp"
                 android:text="Sermon date"
-                />
-
-
-            <Button
-                android:id="@+id/sermon_list_item_playbutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="20dp"
-                android:paddingLeft="4dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:text="@string/listen_button"
-                android:drawableStart="@android:drawable/ic_media_play"
-                android:drawableLeft="@android:drawable/ic_media_play"
-                android:layout_below="@id/sermon_list_item_dateTextView"
-                android:layout_marginLeft="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/red"
-                android:textColor="@color/white"
-
                 />
 
-            <Button
-                android:id="@+id/sermon_list_item_downloadbutton"
-                android:text="@string/download_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="20dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:drawableStart="@android:drawable/stat_sys_download"
-                android:drawableLeft="@android:drawable/stat_sys_download"
-                android:layout_alignTop="@+id/sermon_list_item_playbutton"
-                android:layout_marginRight="20dp"
-                android:layout_alignParentRight="true"
-                android:background="@color/red"
-                android:textColor="@color/white"
-                />
+
 
         </RelativeLayout>
 
