@@ -24,7 +24,7 @@ public class MediaActivity extends FragmentActivity {
     private TextView mTitle;
     private TextView mCurrentTime;
     private TextView mTotalTime;
-    private SeekBar mSeekBar;
+    //private SeekBar mSeekBar;
     private ImageView mPastorPhoto;
 
 
@@ -131,7 +131,28 @@ public class MediaActivity extends FragmentActivity {
 
         //the seekbar is currently being updated by the SermonPlayer class b/c program needs
         //to wait for on prepared
-        mSeekBar = (SeekBar)findViewById((R.id.sermon_audio_seekBar));
+        final SeekBar mSeekBar = (SeekBar)findViewById((R.id.sermon_audio_seekBar));
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                SermonPlayer.get(MediaActivity.this).setPosition(seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
 
         //start the sermon when new activity is created
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
