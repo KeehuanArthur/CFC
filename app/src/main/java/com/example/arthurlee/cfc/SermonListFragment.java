@@ -19,7 +19,12 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -55,6 +60,10 @@ public class SermonListFragment extends ListFragment
     JSONArray jsonSermonList;
 
 
+    //XML parser stuff
+    static String urlString = "http://cfchome.org/feed/sermons/";
+    static private XmlPullParserFactory xmlFactoryObject;
+    static private String smallDate;
 
 
 
@@ -80,7 +89,15 @@ public class SermonListFragment extends ListFragment
         mSermonAdapter = new SermonAdapter(SermonListSingleton.get(getActivity()).getSermons());
         setListAdapter(mSermonAdapter);
 
-        new getSermons().execute();
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //to switch between JSON and XML
+        /////////////////////////////////////////////////////////////////////////////////
+        //JSON
+        //new getSermons().execute();
+        //XML
+        new getSermonsXML().execute();
+        ////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -168,16 +185,6 @@ public class SermonListFragment extends ListFragment
                 }
             });
 
-            mDownloadButton = (Button)convertView.findViewById(R.id.sermon_list_item_downloadbutton);
-            mDownloadButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View convertView) {
-                    mPlayer.stop();
-                }
-            });
-
-
-
-
             /*
             DateFormat simpleDate = new SimpleDateFormat("MMM dd, yyyy");
             String formattedDate = simpleDate.format(s.getDate());
@@ -187,6 +194,10 @@ public class SermonListFragment extends ListFragment
 
         }
     }
+
+//-------------------------------------------------------------------------------------------
+//JSON version of getting sermons
+    //note that there are 2 different Void types. ie void vs Void
 
 
     private class getSermons extends AsyncTask<Void, Void, Void>
@@ -276,7 +287,157 @@ public class SermonListFragment extends ListFragment
     }
 
 
+ //--------------------------------------------------------------------------------------
+//XML version of getting sermons
 
+
+    private class getSermonsXML extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+
+            // Showing progress dialog
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void ... arg0)
+        {
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+
+                // Starts the query
+                conn.connect();
+                InputStream stream = conn.getInputStream();
+
+                xmlFactoryObject = XmlPullParserFactory.newInstance();
+                XmlPullParser myparser = xmlFactoryObject.newPullParser();
+
+                myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                myparser.setInput(stream, null);
+
+                parseXMLAndStoreIt(myparser);
+                stream.close();
+            } catch (Exception e) {
+                //Log.d("RSSFetcher", e.toString());
+
+                //create no internet connection toast here
+                //this crashes right now. look up handlers (multi threading)
+                //Toast.makeText(MainPagerContext,"Connection Error", Toast.LENGTH_SHORT);
+            }
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            super.onPreExecute();
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+        }
+
+
+
+
+        public void parseXMLAndStoreIt(XmlPullParser myParser)
+        {
+            int event;
+            String text = null;
+
+            try
+            {
+                event = myParser.getEventType();
+
+                //look for title and create new final sermon
+                while (event != XmlPullParser.END_DOCUMENT) {
+                    String name = myParser.getName();
+
+                    switch (event) {
+                        case XmlPullParser.START_TAG:
+                            break;
+
+                        case XmlPullParser.TEXT:
+                            text = myParser.getText();
+                            break;
+
+                        case XmlPullParser.END_TAG:
+                            if (name.equals("title")) {
+
+                                if(text.equals("Covenant Fellowship"))
+                                    break;
+
+                                final Sermon s = new Sermon();
+                                s.setTitle(text);
+                                boolean sermonFinished = false;
+                                event = myParser.next();
+
+                                //look for other members of sermon
+                                while (!sermonFinished) {
+                                    name = myParser.getName();
+                                    switch (event) {
+                                        case XmlPullParser.START_TAG:
+                                            if (name.equals("enclosure")) {
+                                                s.setMp3url(myParser.getAttributeValue(null, "url"));
+                                            }
+                                            break;
+
+                                        case XmlPullParser.TEXT:
+                                            text = myParser.getText();
+                                            break;
+
+                                        case XmlPullParser.END_TAG:
+                                            if (name.equals("pubDate")) {
+                                                smallDate = text.substring(0, 16);
+                                                s.setSDate(smallDate);
+                                            } else if (name.equals("itunes:author")) {
+                                                s.setPastor(text);
+                                            } else if (name.equals("itunes:passage")) {
+                                                s.setScripture(text);
+                                                sermonFinished = true;
+                                            }
+                                            break;
+
+                                    }
+                                    //Log.d("working on sermon: ", s.getTitle());
+
+                                    event = myParser.next();
+                                }
+                                getActivity().runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        //add sermon into SermonAdapter (Array Adapter)
+                                        mSermonAdapter.insert(s, mSermonAdapter.getCount());
+                                    }
+                                });
+                            }
+                            break;
+                    }
+                    event = myParser.next();
+                }
+            }
+
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
 }
 

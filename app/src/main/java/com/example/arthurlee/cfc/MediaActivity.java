@@ -2,7 +2,6 @@ package com.example.arthurlee.cfc;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -74,6 +73,10 @@ public class MediaActivity extends FragmentActivity {
                 new_image = getResources().getDrawable(R.drawable.pkj);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
+            case "Rev. KJ Kim":
+                new_image = getResources().getDrawable(R.drawable.pkj);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
             case "Pastor Jim Han":
                 new_image = getResources().getDrawable(R.drawable.pjim);
                 mPastorPhoto.setImageDrawable(new_image);
@@ -83,6 +86,10 @@ public class MediaActivity extends FragmentActivity {
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor David Kang":
+                new_image = getResources().getDrawable(R.drawable.pdave);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
+            case "Rev. David Kang":
                 new_image = getResources().getDrawable(R.drawable.pdave);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
@@ -115,13 +122,14 @@ public class MediaActivity extends FragmentActivity {
             }
         });
 
+        //the seekbar is currently being updated by the SermonPlayer class b/c program needs
+        //to wait for on prepared
         mSeekBar = (SeekBar)findViewById((R.id.sermon_audio_seekBar));
 
 
         //start the sermon when new activity is created
         SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar);
 
-        //updateSeekBar();
 
     }
 
@@ -131,25 +139,5 @@ public class MediaActivity extends FragmentActivity {
         overridePendingTransition(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
     }
 
-
-    Runnable seekRun = new Runnable() {
-        @Override
-        public void run() {
-            SermonPlayer.get(getApplicationContext()).getMediaPlayer().setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    updateSeekBar();
-                }
-            });
-            //updateSeekBar();
-        }
-    };
-
-    public void updateSeekBar()
-    {
-        mSeekBar.setMax(SermonPlayer.get(this).getMaxPosition());
-        mSeekBar.setProgress(SermonPlayer.get(this).getCurrentPosition());
-        seekHandler.postDelayed(seekRun, 1000);
-    }
 
 }

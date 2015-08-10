@@ -169,11 +169,6 @@ public class RSSFetcher
                             c.setLength((sec+ min*60)*1000);
                         }
 
-
-                        else
-                        {
-                        }
-
                         break;
                 }
 

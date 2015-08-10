@@ -76,9 +76,13 @@ public class SermonListSingleton
         return null;
     }
 
+
+    /*   dont add to the sermon list, add to sermon adapter by using insert fuction
+         if you add to the sermon list, it wont automatically update the view
     public void addSermon(Sermon s)
     {
         mSermons.add(s);
     }
+    */
 
 }

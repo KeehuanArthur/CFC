@@ -27,7 +27,6 @@ public class SermonPlayer extends Object {
     private SeekBar mSeekBar;
     private Handler mHandler = new Handler();
     Runnable updateSeekbar;
-    int temp = 0;
 
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
@@ -98,27 +97,24 @@ public class SermonPlayer extends Object {
                     e.printStackTrace();
                 }
 
-
+                //dont play the sermon until enough of sermon has buffered
                 mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         mp.start();
-                        //mDuration = mMediaPlayer.getDuration();
-
                         mSeekBar.setMax(getMediaPlayer().getDuration());
-                        //Log.d("seekbar max------------", Integer.toString(getMediaPlayer().getDuration()));
-
 
                         updateProgress();
-
                     }
 
                 });
 
+
                 updateSeekbar = new Runnable() {
                     @Override
                     public void run() {
-                        updateProgress();
+                        if(mMediaPlayer != null)
+                            updateProgress();
                     }
                 };
 
@@ -133,17 +129,18 @@ public class SermonPlayer extends Object {
     }
 
 
-    //check the application context
     public void updateProgress()
     {
         ((Activity)sAppContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+                if(mMediaPlayer != null)
+                {
+                    mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+                }
             }
         });
 
-        temp+=5;
         //Log.d("progress update", "attempted--------------------------"+ Integer.toString(mMediaPlayer.getCurrentPosition())
         //        +"/"+Integer.toString(mMediaPlayer.getDuration()));
 
