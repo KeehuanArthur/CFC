@@ -93,6 +93,7 @@ public class SermonListFragment extends ListFragment
 
         /////////////////////////////////////////////////////////////////////////////////
         //to switch between JSON and XML
+        //don't forget to edit the url lookup on the SermonPlayer class
         /////////////////////////////////////////////////////////////////////////////////
         //JSON
         //new getSermons().execute();

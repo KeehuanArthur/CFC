@@ -22,8 +22,12 @@ public class MediaActivity extends FragmentActivity {
     private Button mPlayButton;
     private Button mStopButton;
     private TextView mTitle;
+    private TextView mCurrentTime;
+    private TextView mTotalTime;
     private SeekBar mSeekBar;
     private ImageView mPastorPhoto;
+
+
     private AudioPlayer mMediaPlayer = new AudioPlayer();
     private Context mAppContext;
     private Handler seekHandler = new Handler();
@@ -122,13 +126,16 @@ public class MediaActivity extends FragmentActivity {
             }
         });
 
+        mCurrentTime = (TextView)findViewById(R.id.media_current_time);
+        mTotalTime = (TextView)findViewById(R.id.media_total_time);
+
         //the seekbar is currently being updated by the SermonPlayer class b/c program needs
         //to wait for on prepared
         mSeekBar = (SeekBar)findViewById((R.id.sermon_audio_seekBar));
 
-
         //start the sermon when new activity is created
-        SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar);
+        //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
+        SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
 
 
     }

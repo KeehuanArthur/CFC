@@ -8,9 +8,12 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by arthurlee on 7/29/15.
@@ -24,9 +27,17 @@ public class SermonPlayer extends Object {
     private MediaPlayer mMediaPlayer;
     private String mp3Url;
     private UUID curUUID;
-    private SeekBar mSeekBar;
     private Handler mHandler = new Handler();
     Runnable updateSeekbar;
+
+    private TextView mCurrentTime;
+    private TextView mTotalTime;
+    private SeekBar mSeekBar;
+
+
+    SimpleDateFormat simpleDateFormatIn = new SimpleDateFormat("S");
+    SimpleDateFormat simpleDateFormatOut = new SimpleDateFormat("mm:ss");
+
 
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
@@ -57,9 +68,11 @@ public class SermonPlayer extends Object {
     //this is called only when you open a new sermon. This is not to be used to restart sermon
     //to play/pause use pauseplay method
     //this is more like a init/setup function
-    public void play(String url, UUID id, SeekBar seekBar)
+    public void play(String url, UUID id, final SeekBar seekBar, TextView currentTime, final TextView totalTime)
         {
             mSeekBar = seekBar;
+            mCurrentTime = currentTime;
+            mTotalTime = totalTime;
 
             //check if you are clicking the same sermon. If you clicked the sermon that is playing
             //already, don't restart the sermon
@@ -71,14 +84,18 @@ public class SermonPlayer extends Object {
 
 
                 sSermonPlayer.curUUID = id;
-                mp3Url = url;
                 stop();
                 mMediaPlayer = new MediaPlayer();
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+
+
+                //to switch between the JSON and XML version, change setDataSource Parameter
+                mp3Url = url;
                 String fullUrl = "http://s3.amazonaws.com/awctestbucket1/" + url;
 
                 try {
-                    mMediaPlayer.setDataSource(fullUrl);
+                    mMediaPlayer.setDataSource(url);
                     //mPlayer.setOnBufferingUpdateListener(this);
                     //mPlayer.setOnPreparedListener(this);
                     //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
@@ -102,7 +119,41 @@ public class SermonPlayer extends Object {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         mp.start();
-                        mSeekBar.setMax(getMediaPlayer().getDuration());
+                        int tempMS = getMediaPlayer().getDuration();
+                        mSeekBar.setMax(tempMS);
+
+
+                        Long min = TimeUnit.MILLISECONDS.toMinutes(tempMS);
+                        Long sec = TimeUnit.MILLISECONDS.toSeconds(tempMS);
+                        sec = sec - TimeUnit.MINUTES.toSeconds(min);
+
+                        String minStr = Long.toString(min);
+                        String secStr = Long.toString(sec);
+
+                        if( sec < 10 )
+                        {
+                            secStr = "0" + secStr;
+                        }
+
+                        totalTime.setText(minStr + ":" + secStr);
+
+                        /*
+                        mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                            @Override
+                            public void onBufferingUpdate(MediaPlayer mp, final int percent) {
+                                ((Activity)sAppContext).runOnUiThread(new Runnable(){
+                                    @Override
+                                    public void run(){
+                                        if (percent<mSeekBar.getMax()) {
+                                            mSeekBar.setSecondaryProgress(percent);
+                                            mSeekBar.setSecondaryProgress(percent/100);
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+                        */
 
                         updateProgress();
                     }
@@ -136,7 +187,29 @@ public class SermonPlayer extends Object {
             public void run() {
                 if(mMediaPlayer != null)
                 {
-                    mSeekBar.setProgress(mMediaPlayer.getCurrentPosition());
+                    int curTime = mMediaPlayer.getCurrentPosition();
+
+                    mSeekBar.setProgress(curTime);
+
+                    long min = TimeUnit.MILLISECONDS.toMinutes(curTime);
+                    long sec = TimeUnit.MILLISECONDS.toSeconds(curTime) - TimeUnit.MINUTES.toSeconds(min);
+
+                    String minStr = Long.toString(min);
+                    String secStr = Long.toString(sec);
+
+
+                    if( min < 10 )
+                    {
+                        minStr = "0" + minStr;
+                    }
+
+                    if( sec < 10 )
+                    {
+                        secStr = "0"+ secStr;
+                    }
+
+                    mCurrentTime.setText(minStr + ":" + secStr);
+
                 }
             }
         });
@@ -145,8 +218,8 @@ public class SermonPlayer extends Object {
         //        +"/"+Integer.toString(mMediaPlayer.getDuration()));
 
 
-        //update seekbar every 5 seconds
-        mHandler.postDelayed(updateSeekbar, 5000);
+        //update seekbar every 1 second
+        mHandler.postDelayed(updateSeekbar, 1000);
 
     }
 
@@ -174,31 +247,13 @@ public class SermonPlayer extends Object {
         }
         else
         {
-            play(mp3Url, curUUID, mSeekBar);
+            play(mp3Url, curUUID, mSeekBar, mCurrentTime, mTotalTime);
         }
     }
 
-
-
-    public int getCurrentPosition()
+    //position is in milliseconds
+    public void setPosition(int position)
     {
-        if(mMediaPlayer != null)
-        {
-
-            return mMediaPlayer.getCurrentPosition();
-        }
-        return 0;
+        mMediaPlayer.seekTo(position);
     }
-
-    public int getMaxPosition()
-    {
-        if(mMediaPlayer != null)
-        {
-            return mMediaPlayer.getDuration();
-        }
-        return 1;
-    }
-
-
-
 }
