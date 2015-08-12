@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -35,10 +34,6 @@ public class SermonPlayer extends Object {
     private SeekBar mSeekBar;
 
 
-    SimpleDateFormat simpleDateFormatIn = new SimpleDateFormat("S");
-    SimpleDateFormat simpleDateFormatOut = new SimpleDateFormat("mm:ss");
-
-
     public MediaPlayer getMediaPlayer() {
         return mMediaPlayer;
     }
@@ -48,7 +43,7 @@ public class SermonPlayer extends Object {
     {
         sAppContext = appContext;
         //curUUID = UUID.randomUUID();
-        mMediaPlayer = new MediaPlayer();
+        //sSermonPlayer.mMediaPlayer = new MediaPlayer();
     }
 
 
@@ -58,6 +53,8 @@ public class SermonPlayer extends Object {
         if(sSermonPlayer == null)
         {
             sSermonPlayer = new SermonPlayer(c);
+            sSermonPlayer.curUUID = UUID.randomUUID();
+            sSermonPlayer.mMediaPlayer = new MediaPlayer();
             Log.d("Constructor called", "Constructor called------------------------");
         }
         sAppContext = c;
@@ -70,23 +67,26 @@ public class SermonPlayer extends Object {
     //this is more like a init/setup function
     public void play(String url, UUID id, final SeekBar seekBar, TextView currentTime, final TextView totalTime)
         {
-            mSeekBar = seekBar;
-            mCurrentTime = currentTime;
-            mTotalTime = totalTime;
+            sSermonPlayer.mSeekBar = seekBar;
+            sSermonPlayer.mCurrentTime = currentTime;
+            sSermonPlayer.mTotalTime = totalTime;
 
             //check if you are clicking the same sermon. If you clicked the sermon that is playing
             //already, don't restart the sermon
-            if(curUUID != id) {
-
-                Log.d("UUID parameter", id.toString());
-                //Log.d("UUID in Singleton", curUUID.toString());
 
 
+            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url)) {
 
-                sSermonPlayer.curUUID = id;
-                stop();
-                mMediaPlayer = new MediaPlayer();
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                sSermonPlayer.mp3Url = url;
+                //Log.d("set URL: ", url);
+                Log.d("url was set: ", sSermonPlayer.getCurrentUrl());
+                Log.d("got passed if", "wtf man");
+
+                sSermonPlayer.stop();
+                //sSermonPlayer.curUUID = id;
+                //stop();
+                sSermonPlayer.mMediaPlayer = new MediaPlayer();
+                sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
 
 
@@ -95,11 +95,11 @@ public class SermonPlayer extends Object {
                 String fullUrl = "http://s3.amazonaws.com/awctestbucket1/" + url;
 
                 try {
-                    mMediaPlayer.setDataSource(url);
+                    sSermonPlayer.mMediaPlayer.setDataSource(url);
                     //mPlayer.setOnBufferingUpdateListener(this);
                     //mPlayer.setOnPreparedListener(this);
                     //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
-                    mMediaPlayer.prepareAsync();
+                    sSermonPlayer.mMediaPlayer.prepareAsync();
                 } catch (IllegalArgumentException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -115,12 +115,12 @@ public class SermonPlayer extends Object {
                 }
 
                 //dont play the sermon until enough of sermon has buffered
-                mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                sSermonPlayer.mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         mp.start();
                         int tempMS = getMediaPlayer().getDuration();
-                        mSeekBar.setMax(tempMS);
+                        sSermonPlayer.mSeekBar.setMax(tempMS);
 
 
                         Long min = TimeUnit.MILLISECONDS.toMinutes(tempMS);
@@ -137,6 +137,7 @@ public class SermonPlayer extends Object {
 
                         totalTime.setText(minStr + ":" + secStr);
 
+
                         /*
                         mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                             @Override
@@ -144,8 +145,9 @@ public class SermonPlayer extends Object {
                                 ((Activity)sAppContext).runOnUiThread(new Runnable(){
                                     @Override
                                     public void run(){
-                                        if (percent<mSeekBar.getMax()) {
-                                            mSeekBar.setSecondaryProgress(percent);
+                                        if (percent < 100) {
+                                            //mSeekBar.setSecondaryProgress(percent);
+
                                             mSeekBar.setSecondaryProgress(percent/100);
                                         }
                                     }
@@ -161,7 +163,7 @@ public class SermonPlayer extends Object {
                 });
 
 
-                updateSeekbar = new Runnable() {
+                sSermonPlayer.updateSeekbar = new Runnable() {
                     @Override
                     public void run() {
                         if(mMediaPlayer != null)
@@ -170,13 +172,13 @@ public class SermonPlayer extends Object {
                 };
 
 
-                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                sSermonPlayer.mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         stop();
                         //make it start from beginning
                     }
                 });
-            }
+            }//
     }
 
 
@@ -185,11 +187,11 @@ public class SermonPlayer extends Object {
         ((Activity)sAppContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mMediaPlayer != null)
+                if(sSermonPlayer.mMediaPlayer != null)
                 {
-                    int curTime = mMediaPlayer.getCurrentPosition();
+                    int curTime = sSermonPlayer.mMediaPlayer.getCurrentPosition();
 
-                    mSeekBar.setProgress(curTime);
+                    sSermonPlayer.mSeekBar.setProgress(curTime);
 
                     long min = TimeUnit.MILLISECONDS.toMinutes(curTime);
                     long sec = TimeUnit.MILLISECONDS.toSeconds(curTime) - TimeUnit.MINUTES.toSeconds(min);
@@ -208,7 +210,7 @@ public class SermonPlayer extends Object {
                         secStr = "0"+ secStr;
                     }
 
-                    mCurrentTime.setText(minStr + ":" + secStr);
+                    sSermonPlayer.mCurrentTime.setText(minStr + ":" + secStr);
 
                 }
             }
@@ -219,30 +221,30 @@ public class SermonPlayer extends Object {
 
 
         //update seekbar every 1 second
-        mHandler.postDelayed(updateSeekbar, 1000);
+        sSermonPlayer.mHandler.postDelayed(updateSeekbar, 1000);
 
     }
 
     public void stop()
     {
-        if (mMediaPlayer != null)
+        if (sSermonPlayer.mMediaPlayer != null)
         {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
+            sSermonPlayer.mMediaPlayer.release();
+            sSermonPlayer.mMediaPlayer = null;
         }
     }
 
     public void pauseplay(Button pauseplaybutton)
     {
-        if (mMediaPlayer != null)
+        if (sSermonPlayer.mMediaPlayer != null)
         {
-            if (mMediaPlayer.isPlaying())
+            if (sSermonPlayer.mMediaPlayer.isPlaying())
             {
-                mMediaPlayer.pause();
+                sSermonPlayer.mMediaPlayer.pause();
             }
             else
             {
-                mMediaPlayer.start();
+                sSermonPlayer.mMediaPlayer.start();
             }
         }
         else
@@ -251,9 +253,23 @@ public class SermonPlayer extends Object {
         }
     }
 
+    public String getCurrentUrl()
+    {
+        if(sSermonPlayer == null)
+        {
+            Log.d("getCurrentURL", "returned 0000");
+            return "00000";
+        }
+        else
+        {
+            Log.d("getCurrentURl", "returned the sermon URL");
+            return sSermonPlayer.mp3Url;
+        }
+    }
+
     //position is in milliseconds
     public void setPosition(int position)
     {
-        mMediaPlayer.seekTo(position);
+        sSermonPlayer.mMediaPlayer.seekTo(position);
     }
 }

@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -63,7 +62,7 @@ public class MediaActivity extends FragmentActivity {
         mTitle = (TextView)findViewById(R.id.media_title);
         mTitle.setText(mSermonTitle);
 
-        Log.d("UUID found in player", sermonUUID.toString());
+        //Log.d("UUID found in player", sermonUUID.toString());
 
 
         Drawable new_image;
@@ -156,8 +155,9 @@ public class MediaActivity extends FragmentActivity {
 
         //start the sermon when new activity is created
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
-        SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
 
+
+        SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
 
     }
 
