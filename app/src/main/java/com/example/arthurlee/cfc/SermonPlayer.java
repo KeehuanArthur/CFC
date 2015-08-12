@@ -179,6 +179,27 @@ public class SermonPlayer extends Object {
                     }
                 });
             }//
+
+            else
+            {
+                int tempMS = getMediaPlayer().getDuration();
+                sSermonPlayer.mSeekBar.setMax(tempMS);
+
+
+                Long min = TimeUnit.MILLISECONDS.toMinutes(tempMS);
+                Long sec = TimeUnit.MILLISECONDS.toSeconds(tempMS);
+                sec = sec - TimeUnit.MINUTES.toSeconds(min);
+
+                String minStr = Long.toString(min);
+                String secStr = Long.toString(sec);
+
+                if( sec < 10 )
+                {
+                    secStr = "0" + secStr;
+                }
+
+                totalTime.setText(minStr + ":" + secStr);
+            }
     }
 
 
