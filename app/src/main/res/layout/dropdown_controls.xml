@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/notification_controller">
+
+
+
+
+    <LinearLayout
+        android:id="@+id/buttons_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/notification_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/app_name"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:layout_above="@+id/buttons_row"
+            />
+
+        <TextView
+            android:id="@+id/notification_speaker"
+            android:text="speaker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            />
+
+        <TextView
+            android:id="@+id/notification_passage"
+            android:text="passage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            />
+
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/notification_playpause"
+        android:layout_toRightOf="@id/buttons_row"
+        android:layout_toEndOf="@id/buttons_row"
+        android:background="@drawable/play_button"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="5dp"
+        android:scaleType="fitCenter"
+        />
+
+</RelativeLayout>

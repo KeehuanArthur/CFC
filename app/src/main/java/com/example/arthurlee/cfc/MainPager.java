@@ -36,7 +36,6 @@ public class MainPager extends ActionBarActivity
 
     //ViewPager viewPager;
 
-    AudioPlayer mAudioPlayer;
 
 
     //slide out bar stuff
@@ -62,7 +61,6 @@ public class MainPager extends ActionBarActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sermonList = new SermonListFragment();
-        mAudioPlayer = new AudioPlayer();
 
 
         /*
@@ -147,7 +145,7 @@ public class MainPager extends ActionBarActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_pager, menu);
-        setTitle("CFC Home");
+        //setTitle("CFC Home");
 
 
         return true;

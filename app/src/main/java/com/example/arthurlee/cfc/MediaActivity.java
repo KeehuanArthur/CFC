@@ -51,6 +51,7 @@ public class MediaActivity extends FragmentActivity {
         setContentView(R.layout.activity_player);
 
 
+
         mMP3URL = getIntent().getStringExtra(EXTRA_MP3URL);
 
         mPastorName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
@@ -110,7 +111,7 @@ public class MediaActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 mPlayButton.setText("Pause");
-                SermonPlayer.get(MediaActivity.this).pauseplay(mPlayButton);
+                SermonPlayer.get(MediaActivity.this).pauseplay();
 
             }
         });

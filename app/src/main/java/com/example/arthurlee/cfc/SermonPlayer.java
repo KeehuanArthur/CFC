@@ -6,7 +6,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -255,7 +254,9 @@ public class SermonPlayer extends Object {
         }
     }
 
-    public void pauseplay(Button pauseplaybutton)
+
+    //remember to be able to change the icon image when running this function. pass in button later
+    public void pauseplay()
     {
         if (sSermonPlayer.mMediaPlayer != null)
         {
@@ -286,6 +287,11 @@ public class SermonPlayer extends Object {
             Log.d("getCurrentURl", "returned the sermon URL");
             return sSermonPlayer.mp3Url;
         }
+    }
+
+    public boolean isPlaying()
+    {
+        return mMediaPlayer.isPlaying();
     }
 
     //position is in milliseconds

@@ -35,4 +35,13 @@
         android:layout_marginRight="10dp"
         android:gravity="center"/>
 
+
+    <Button
+        android:id="@+id/about_website_button"
+        android:text="@string/website_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        />
+
 </LinearLayout>

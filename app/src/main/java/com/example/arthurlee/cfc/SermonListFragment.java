@@ -138,7 +138,17 @@ public class SermonListFragment extends ListFragment
         i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
         i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
         i.putExtra(MediaActivity.EXTRA_SERMON_UUID, s.getId().toString());
+
+        //start notification controller here
+
+        Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
+        intent.setAction(DropdownControls.ACTION_NOTIFICATION_PLAY_PAUSE);
+        getActivity().startService(intent);
+
+        Log.d("list item was clicked", "List item was clicked");
+
         startActivity(i);
+
     }
 
 
