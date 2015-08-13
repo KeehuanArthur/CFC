@@ -111,7 +111,7 @@ public class MediaActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 mPlayButton.setText("Pause");
-                SermonPlayer.get(MediaActivity.this).pauseplay();
+                SermonPlayer.get(MediaActivity.this, false).pauseplay();
 
             }
         });
@@ -122,7 +122,7 @@ public class MediaActivity extends FragmentActivity {
             public void onClick(View v) {
 
                 //mMediaPlayer.stop();
-                SermonPlayer.get(MediaActivity.this).stop();
+                SermonPlayer.get(MediaActivity.this, false).stop();
             }
         });
 
@@ -136,7 +136,7 @@ public class MediaActivity extends FragmentActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
-                SermonPlayer.get(MediaActivity.this).setPosition(seekBar.getProgress());
+                SermonPlayer.get(MediaActivity.this, false).setPosition(seekBar.getProgress());
             }
 
             @Override
@@ -158,7 +158,7 @@ public class MediaActivity extends FragmentActivity {
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
 
 
-        SermonPlayer.get(MediaActivity.this).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
+        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
 
     }
 

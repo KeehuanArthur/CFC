@@ -142,10 +142,9 @@ public class SermonListFragment extends ListFragment
         //start notification controller here
 
         Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
-        intent.setAction(DropdownControls.ACTION_NOTIFICATION_PLAY_PAUSE);
-        getActivity().startService(intent);
+        intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
+        getActivity().getApplicationContext().startService(intent);
 
-        Log.d("list item was clicked", "List item was clicked");
 
         startActivity(i);
 

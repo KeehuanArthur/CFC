@@ -47,7 +47,7 @@ public class SermonPlayer extends Object {
 
 
     //call this function to use singleton
-    public static SermonPlayer get(Context c)
+    public static SermonPlayer get(Context c, boolean fromService)
     {
         if(sSermonPlayer == null)
         {
@@ -56,7 +56,12 @@ public class SermonPlayer extends Object {
             sSermonPlayer.mMediaPlayer = new MediaPlayer();
             Log.d("Constructor called", "Constructor called------------------------");
         }
-        sAppContext = c;
+
+        if(!fromService)
+        {
+            sAppContext = c;
+        }
+
         return sSermonPlayer;
     }
 
@@ -77,9 +82,6 @@ public class SermonPlayer extends Object {
             if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url)) {
 
                 sSermonPlayer.mp3Url = url;
-                //Log.d("set URL: ", url);
-                Log.d("url was set: ", sSermonPlayer.getCurrentUrl());
-                Log.d("got passed if", "wtf man");
 
                 sSermonPlayer.stop();
                 //sSermonPlayer.curUUID = id;
@@ -279,12 +281,10 @@ public class SermonPlayer extends Object {
     {
         if(sSermonPlayer == null)
         {
-            Log.d("getCurrentURL", "returned 0000");
             return "00000";
         }
         else
         {
-            Log.d("getCurrentURl", "returned the sermon URL");
             return sSermonPlayer.mp3Url;
         }
     }
