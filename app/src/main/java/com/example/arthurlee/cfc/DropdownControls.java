@@ -17,8 +17,24 @@ import android.widget.RemoteViews;
 public class DropdownControls extends Service
 {
     public static final String ACTION_NOTIFICATION_PLAY_PAUSE = "action_notification_playpause";
+    public static final String ACTION_NOTIFICATION_CLOSE = "action_notification_close";
     public static final String ACTION_NOTIFICATION_NULL = "null";
+
+
+    public static final String ACTION_NOTIFICATION_EXTRA_TITLE = "com.cfc.notificationTitle";
+    public static final String ACTION_NOTIFICATION_EXTRA_PASTOR = "com.cfc.notificationPastor";
+    public static final String ACTION_NOTIFICATION_EXTRA_DATE ="com.cfc.notificationDate";
+    public static final String ACTION_NOTIFICATION_EXTRA_PASSAGE = "com.cfc.notificationPassage";
+
+    private String mTitle;
+    private String mPastor;
+    private String mDate;
+    private String mPassage;
+
     private boolean mIsPlaying = SermonPlayer.get(getBaseContext(), true).isPlaying();
+    private NotificationManager mManager;
+    private RemoteViews mCustomRemoteView;
+    Notification mSermonController;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
@@ -52,17 +68,28 @@ public class DropdownControls extends Service
     {
         if (intent != null && intent.getAction() != null) {
 
-            //Log.d("notification control", "intent and action are not null");
+            mTitle = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_TITLE);
+            mPastor = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASTOR);
+            //mDate = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_DATE);
+            mPassage = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASSAGE);
 
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_PLAY_PAUSE))
             {
                 SermonPlayer.get(getApplicationContext(), true).pauseplay();
-                showNotification(mIsPlaying);
+                //showNotification(mIsPlaying);
+                updateNotification();
             }
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
             {
                 mIsPlaying = false;
                 showNotification(mIsPlaying);
+            }
+
+            if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLOSE))
+            {
+                Log.d("handling close", "handling close" );
+                SermonPlayer.get(getBaseContext(),true).stop();
+                mManager.cancelAll();
             }
 
         }
@@ -73,28 +100,45 @@ public class DropdownControls extends Service
 
     private void showNotification(boolean isPlaying)
     {
-        Notification notification = new NotificationCompat.Builder( getApplicationContext() )
+        mSermonController = new NotificationCompat.Builder( getApplicationContext() )
                 .setAutoCancel(false)
-                .setSmallIcon(R.drawable.play_button)
+                .setSmallIcon(R.drawable.play_button_white)
                 .setContentTitle(getString(R.string.app_name))
                 .build();
 
-        notification.bigContentView = getExpandedView( isPlaying );
+        mSermonController.bigContentView = getExpandedView( isPlaying );
+        mSermonController.flags = Notification.FLAG_ONGOING_EVENT;
 
-        NotificationManager manager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
-        manager.notify( 1, notification );
-        Log.d("notification created", "notification created");
+
+        mManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
+        mManager.notify(1, mSermonController);
 
     }
 
+    private void updateNotification()
+    {
+        if( SermonPlayer.get(getBaseContext(), true).isPlaying() )
+        {
+            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button );
+            Log.d("icon update attempt", "to play");
+        }
+        else
+        {
+            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button );
+            Log.d("icon update attempt", "to pause");
+        }
+    }
+
     private RemoteViews getExpandedView( boolean isPlaying ) {
-        RemoteViews customView = new RemoteViews( getPackageName(), R.layout.dropdown_controls );
+        mCustomRemoteView = new RemoteViews( getPackageName(), R.layout.dropdown_controls );
 
-
+        mCustomRemoteView.setTextViewText(R.id.notification_title, mTitle);
+        mCustomRemoteView.setTextViewText(R.id.notification_speaker, mPastor);
+        mCustomRemoteView.setTextViewText(R.id.notification_passage, mPassage);
 
         if( isPlaying )
         {
-            customView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button);
+            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button);
         }
         else
         {
@@ -103,11 +147,16 @@ public class DropdownControls extends Service
 
         Intent intent = new Intent( getApplicationContext(), DropdownControls.class );
 
-        intent.setAction( ACTION_NOTIFICATION_PLAY_PAUSE );
+        intent.setAction(ACTION_NOTIFICATION_PLAY_PAUSE);
         PendingIntent pendingIntent = PendingIntent.getService( getApplicationContext(), 1, intent, 0 );
-        customView.setOnClickPendingIntent( R.id.notification_playpause, pendingIntent );
+        mCustomRemoteView.setOnClickPendingIntent( R.id.notification_playpause, pendingIntent );
 
-        return customView;
+
+        intent.setAction(ACTION_NOTIFICATION_CLOSE);
+        pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
+        mCustomRemoteView.setOnClickPendingIntent(R.id.notification_close, pendingIntent);
+
+        return mCustomRemoteView;
     }
 
 }

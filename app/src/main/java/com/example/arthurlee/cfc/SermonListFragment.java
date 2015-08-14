@@ -142,6 +142,12 @@ public class SermonListFragment extends ListFragment
         //start notification controller here
 
         Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, s.getTitle());
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, s.getPastor());
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, s.getSDate());
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, s.getScripture());
+
+
         intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
         getActivity().getApplicationContext().startService(intent);
 
@@ -308,8 +314,6 @@ public class SermonListFragment extends ListFragment
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
-
-
 
 
         }
