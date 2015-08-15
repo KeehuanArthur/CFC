@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class SermonPlayer extends Object {
     private TextView mCurrentTime;
     private TextView mTotalTime;
     private SeekBar mSeekBar;
+    private ImageButton mPlayPauseButton;
 
 
     public MediaPlayer getMediaPlayer() {
@@ -69,11 +71,13 @@ public class SermonPlayer extends Object {
     //this is called only when you open a new sermon. This is not to be used to restart sermon
     //to play/pause use pauseplay method
     //this is more like a init/setup function
-    public void play(String url, UUID id, final SeekBar seekBar, TextView currentTime, final TextView totalTime)
+    public void play(String url, UUID id, final SeekBar seekBar, TextView currentTime, final TextView totalTime,
+                     ImageButton playpause)
         {
             sSermonPlayer.mSeekBar = seekBar;
             sSermonPlayer.mCurrentTime = currentTime;
             sSermonPlayer.mTotalTime = totalTime;
+            sSermonPlayer.mPlayPauseButton = playpause;
 
             //check if you are clicking the same sermon. If you clicked the sermon that is playing
             //already, don't restart the sermon
@@ -265,15 +269,33 @@ public class SermonPlayer extends Object {
             if (sSermonPlayer.mMediaPlayer.isPlaying())
             {
                 sSermonPlayer.mMediaPlayer.pause();
+
+
+                ((Activity)sAppContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
+                    }
+                });
+
             }
             else
             {
                 sSermonPlayer.mMediaPlayer.start();
+
+
+                ((Activity)sAppContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                    }
+                });
+
             }
         }
         else
         {
-            play(mp3Url, curUUID, mSeekBar, mCurrentTime, mTotalTime);
+            play(mp3Url, curUUID, mSeekBar, mCurrentTime, mTotalTime, mPlayPauseButton);
         }
     }
 

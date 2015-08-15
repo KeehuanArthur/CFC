@@ -94,14 +94,13 @@ public class DropdownControls extends Service
 
         }
 
-        //Log.d("notification control", "intent might be null");
     }
 
 
     private void showNotification(boolean isPlaying)
     {
         mSermonController = new NotificationCompat.Builder( getApplicationContext() )
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .setSmallIcon(R.drawable.play_button_white)
                 .setContentTitle(getString(R.string.app_name))
                 .build();
@@ -110,25 +109,35 @@ public class DropdownControls extends Service
         mSermonController.flags = Notification.FLAG_ONGOING_EVENT;
 
 
-        mManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
-        mManager.notify(1, mSermonController);
-
+        displayNotification();
     }
+
+
+
 
     private void updateNotification()
     {
         if( SermonPlayer.get(getBaseContext(), true).isPlaying() )
         {
-            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button );
-            Log.d("icon update attempt", "to play");
+            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button );
         }
         else
         {
-            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button );
-            Log.d("icon update attempt", "to pause");
+            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button );
         }
+
+        displayNotification();
     }
 
+
+    private void displayNotification()
+    {
+        mManager = (NotificationManager)getSystemService( Context.NOTIFICATION_SERVICE );
+        mManager.notify(1, mSermonController);
+    }
+
+
+    // change input to updateing so you dont overwrite the text
     private RemoteViews getExpandedView( boolean isPlaying ) {
         mCustomRemoteView = new RemoteViews( getPackageName(), R.layout.dropdown_controls );
 
@@ -136,14 +145,7 @@ public class DropdownControls extends Service
         mCustomRemoteView.setTextViewText(R.id.notification_speaker, mPastor);
         mCustomRemoteView.setTextViewText(R.id.notification_passage, mPassage);
 
-        if( isPlaying )
-        {
-            mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button);
-        }
-        else
-        {
-            //customView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button);
-        }
+        mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button);
 
         Intent intent = new Intent( getApplicationContext(), DropdownControls.class );
 

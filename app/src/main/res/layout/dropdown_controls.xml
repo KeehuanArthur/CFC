@@ -54,7 +54,7 @@
         <ImageButton
             android:id="@+id/notification_close"
             android:layout_alignParentRight="true"
-            android:background="@drawable/close_button_black"
+            android:background="@drawable/close_easier"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_margin="10dp"
@@ -62,9 +62,8 @@
 
         <ImageButton
             android:id="@+id/notification_playpause"
-            android:layout_alignParentRight="true"
             android:layout_toLeftOf="@id/notification_close"
-            android:background="@drawable/play_button"
+            android:background="@drawable/notification_template_icon_bg"
             android:layout_width="25dp"
             android:layout_weight="1"
             android:layout_height="25dp"

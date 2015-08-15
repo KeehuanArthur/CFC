@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -18,8 +18,7 @@ import java.util.UUID;
  */
 public class MediaActivity extends FragmentActivity {
 
-    private Button mPlayButton;
-    private Button mStopButton;
+    private ImageButton mPlayButton;
     private TextView mTitle;
     private TextView mCurrentTime;
     private TextView mTotalTime;
@@ -106,25 +105,15 @@ public class MediaActivity extends FragmentActivity {
 
 
 
-        mPlayButton = (Button)findViewById(R.id.media_play_button);
+        mPlayButton = (ImageButton)findViewById(R.id.media_play_button);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPlayButton.setText("Pause");
                 SermonPlayer.get(MediaActivity.this, false).pauseplay();
 
             }
         });
 
-        mStopButton = (Button)findViewById(R.id.media_stop_button);
-        mStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //mMediaPlayer.stop();
-                SermonPlayer.get(MediaActivity.this, false).stop();
-            }
-        });
 
         mCurrentTime = (TextView)findViewById(R.id.media_current_time);
         mTotalTime = (TextView)findViewById(R.id.media_total_time);
@@ -158,7 +147,7 @@ public class MediaActivity extends FragmentActivity {
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
 
 
-        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime);
+        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
 
     }
 
