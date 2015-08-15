@@ -137,7 +137,7 @@ public class DropdownControls extends Service
     }
 
 
-    // change input to updateing so you dont overwrite the text
+    // change input to updating so you dont overwrite the text
     private RemoteViews getExpandedView( boolean isPlaying ) {
         mCustomRemoteView = new RemoteViews( getPackageName(), R.layout.dropdown_controls );
 

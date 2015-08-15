@@ -27,6 +27,7 @@ public class SermonPlayer extends Object {
     private String mp3Url;
     private UUID curUUID;
     private Handler mHandler = new Handler();
+    private boolean mForceRestart;
     Runnable updateSeekbar;
 
     private TextView mCurrentTime;
@@ -56,6 +57,7 @@ public class SermonPlayer extends Object {
             sSermonPlayer = new SermonPlayer(c);
             sSermonPlayer.curUUID = UUID.randomUUID();
             sSermonPlayer.mMediaPlayer = new MediaPlayer();
+            sSermonPlayer.mForceRestart = false;
             Log.d("Constructor called", "Constructor called------------------------");
         }
 
@@ -83,15 +85,16 @@ public class SermonPlayer extends Object {
             //already, don't restart the sermon
 
 
-            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url)) {
+            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart) {
+
+                Log.d("SermonPlayer","play entered init phase");
 
                 sSermonPlayer.mp3Url = url;
 
                 sSermonPlayer.stop();
-                //sSermonPlayer.curUUID = id;
-                //stop();
                 sSermonPlayer.mMediaPlayer = new MediaPlayer();
                 sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                sSermonPlayer.mForceRestart = false;
 
 
 
@@ -183,6 +186,8 @@ public class SermonPlayer extends Object {
                         //make it start from beginning
                     }
                 });
+
+                Log.d("Sermon Player", "Completed init phase");
             }//
 
             else
@@ -257,6 +262,7 @@ public class SermonPlayer extends Object {
         {
             sSermonPlayer.mMediaPlayer.release();
             sSermonPlayer.mMediaPlayer = null;
+            sSermonPlayer.mForceRestart = true;
         }
     }
 
@@ -264,8 +270,15 @@ public class SermonPlayer extends Object {
     //remember to be able to change the icon image when running this function. pass in button later
     public void pauseplay()
     {
-        if (sSermonPlayer.mMediaPlayer != null)
+
+        Log.d("Force Restart Value", Boolean.toString(sSermonPlayer.mForceRestart));
+
+        if (sSermonPlayer.mMediaPlayer != null && !sSermonPlayer.mForceRestart)
         {
+
+
+            Log.d("pauseplayfunction", "entered wrong if statement");
+
             if (sSermonPlayer.mMediaPlayer.isPlaying())
             {
                 sSermonPlayer.mMediaPlayer.pause();
@@ -295,6 +308,7 @@ public class SermonPlayer extends Object {
         }
         else
         {
+            Log.d("play function", "start ");
             play(mp3Url, curUUID, mSeekBar, mCurrentTime, mTotalTime, mPlayPauseButton);
         }
     }

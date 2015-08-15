@@ -54,10 +54,11 @@
         <ImageButton
             android:id="@+id/notification_close"
             android:layout_alignParentRight="true"
-            android:background="@drawable/close_easier"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_margin="10dp"
+            android:background="@drawable/close_button_black"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_margin="15dp"
+            android:layout_marginRight="5dp"
             />
 
         <ImageButton
