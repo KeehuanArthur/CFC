@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.amazonmobileanalytics.AnalyticsEvent;
+
 import java.util.UUID;
 
 /**
@@ -50,13 +52,26 @@ public class MediaActivity extends FragmentActivity {
         setContentView(R.layout.activity_player);
 
 
-
         mMP3URL = getIntent().getStringExtra(EXTRA_MP3URL);
 
         mPastorName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
         mPastorPhoto = (ImageView)findViewById(R.id.pastorPhoto);
         mSermonTitle = getIntent().getStringExtra(EXTRA_SERMON_TITLE);
         sermonUUID = UUID.fromString(getIntent().getStringExtra(EXTRA_SERMON_UUID));
+
+
+
+        AnalyticsEvent testEvent = MainPager.analytics.getEventClient().createEvent("test")
+                .withAttribute("test title", mSermonTitle);
+
+        MainPager.analytics.getEventClient().recordEvent(testEvent);
+        MainPager.analytics.getEventClient().submitEvents();
+
+        /*
+        if(MainPager.analytics != null) {
+            MainPager.analytics.getSessionClient().pauseSession();
+        }
+        */
 
 
         mTitle = (TextView)findViewById(R.id.media_title);

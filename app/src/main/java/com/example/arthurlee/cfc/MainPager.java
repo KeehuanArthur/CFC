@@ -23,6 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.amazonmobileanalytics.InitializationException;
+import com.amazonaws.mobileconnectors.amazonmobileanalytics.MobileAnalyticsManager;
+
 import java.util.ArrayList;
 
 
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 public class MainPager extends ActionBarActivity
 {
     public ListFragment sermonList;
+    public static MobileAnalyticsManager analytics;
     Button mSearchButton;
 
     //ViewPager viewPager;
@@ -54,8 +58,32 @@ public class MainPager extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+
+        //Alex's mobile analytics account number: 8415647aa5814de8b7c14b02607164b7
+        //Alex's general cognito identity pool id: us-east-1:473ecee9-e260-47de-a713-4593e7f8ddc4
+
+
+        //My mobile analytics account number: 9d2215ddf13640a3a131bf5a821c57f0
+
+
+
+        try {
+            analytics = MobileAnalyticsManager.getOrCreateInstance(
+                    this.getApplicationContext(),
+                    "8415647aa5814de8b7c14b02607164b7", //Amazon Mobile Analytics App ID
+                    "us-east-1:473ecee9-e260-47de-a713-4593e7f8ddc4" //Amazon Cognito Identity Pool ID
+            );
+        } catch(InitializationException ex) {
+            Log.e(this.getClass().getName(), "Failed to initialize Amazon Mobile Analytics", ex);
+        }
+
+
         setContentView(R.layout.activity_main);
         //getActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
