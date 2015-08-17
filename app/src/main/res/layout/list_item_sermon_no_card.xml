@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/sermon_list_item_titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#444444"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="4dp"
+        android:text="Sermon Title"
+        />
+    <TextView
+        android:id="@+id/sermon_list_item_pastorName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sermon_list_item_titleTextView"
+        android:paddingRight="4dp"
+        android:paddingLeft="25dp"
+        android:paddingTop="10dp"
+        android:text="Pastor Min"
+        />
+    <TextView
+        android:id="@+id/sermon_list_item_passage"
+        android:layout_below="@id/sermon_list_item_pastorName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="25dp"
+        android:text="Passage"
+        />
+
+    <TextView
+        android:id="@+id/sermon_list_item_dateTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sermon_list_item_passage"
+        android:paddingLeft="25dp"
+        android:paddingRight="4dp"
+        android:text="Sermon date"
+        android:layout_marginBottom="20dp"
+        />
+
+
+
+</RelativeLayout>

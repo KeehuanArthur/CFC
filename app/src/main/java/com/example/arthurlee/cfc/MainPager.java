@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -36,7 +36,9 @@ public class MainPager extends ActionBarActivity
 {
     public ListFragment sermonList;
     public static MobileAnalyticsManager analytics;
-    Button mSearchButton;
+    public static ArrayList<Sermon> sermonArrayList;
+    private ArrayList<String> mSermonCategories = new ArrayList<String>();
+
 
     //ViewPager viewPager;
 
@@ -85,10 +87,10 @@ public class MainPager extends ActionBarActivity
 
 
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sermonList = new SermonListFragment();
+
 
 
         /*
@@ -114,8 +116,8 @@ public class MainPager extends ActionBarActivity
         this.getSupportActionBar().setElevation(0);
         */
 
-
-        mNavItems.add(new NavItem("Sermons", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
+        mNavItems.add(new NavItem("Home", "", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
+        mNavItems.add(new NavItem("Library", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.abc_ic_commit_search_api_mtrl_alpha));
         //mNavItems.add(new NavItem("About", "Get to know about us", R.drawable.abc_ic_clear_mtrl_alpha));
 
@@ -197,9 +199,26 @@ public class MainPager extends ActionBarActivity
 
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search)
+        if (id == R.id.action_now_playing)
         {
-            Toast.makeText(MainPager.this, "search button", Toast.LENGTH_SHORT).show();
+
+            if(!SermonPlayer.get(MainPager.this.getBaseContext(), true).isPlaying())
+            {
+                Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
+            }
+
+            else
+            {
+                Intent i = new Intent(this, MediaActivity.class);
+                i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, Constants.nowPlayingPastor);
+                i.putExtra(MediaActivity.EXTRA_MP3URL, Constants.nowPlayingUrl);
+                i.putExtra(MediaActivity.EXTRA_SERMON_DATE, Constants.nowPlayingDate);
+                i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, Constants.nowPlayingTitle);
+
+                startActivity(i);
+
+            }
+
             return true;
         }
 

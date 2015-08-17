@@ -75,7 +75,7 @@ public class DropdownControls extends Service
 
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_PLAY_PAUSE))
             {
-                SermonPlayer.get(getApplicationContext(), true).pauseplay();
+                SermonPlayer.get(getApplicationContext(), true).playPause(false, false);
                 //showNotification(mIsPlaying);
                 updateNotification();
             }

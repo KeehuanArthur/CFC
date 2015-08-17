@@ -100,6 +100,7 @@ public class SermonListFragment extends ListFragment
         //XML
         new getSermonsXML().execute();
         ////////////////////////////////////////////////////////////////////////////////
+
     }
 
 
@@ -118,7 +119,7 @@ public class SermonListFragment extends ListFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        Log.d("SermonListFragment", "List fragment created!!");
+        //Log.d("SermonListFragment", "List fragment created!!");
         super.onCreate(savedInstanceState);
         getListView().setDivider(null);
         getListView().setDividerHeight(0);
@@ -131,16 +132,22 @@ public class SermonListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        //New Activity Stuff
         Sermon s = ((SermonAdapter)getListAdapter()).getItem(position);
         Intent i = new Intent(getActivity(), MediaActivity.class);
         i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
         i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
         i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
         i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
-        i.putExtra(MediaActivity.EXTRA_SERMON_UUID, s.getId().toString());
+
+        //Set Global Vars
+        Constants.nowPlayingTitle = s.getTitle();
+        Constants.nowPlayingPastor = s.getPastor();
+        Constants.nowPlayingPassage = s.getScripture();
+        Constants.nowPlayingDate = s.getSDate();
+        Constants.nowPlayingUrl = s.getMp3url();
 
         //start notification controller here
-
         Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, s.getTitle());
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, s.getPastor());

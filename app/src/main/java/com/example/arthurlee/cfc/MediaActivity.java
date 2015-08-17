@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,8 +14,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.AnalyticsEvent;
-
-import java.util.UUID;
 
 /**
  * Created by arthurlee on 7/25/15.
@@ -26,6 +26,7 @@ public class MediaActivity extends FragmentActivity {
     private TextView mTotalTime;
     //private SeekBar mSeekBar;
     private ImageView mPastorPhoto;
+    private PhoneStateListener mPhoneStateListener;
 
 
     private AudioPlayer mMediaPlayer = new AudioPlayer();
@@ -36,13 +37,11 @@ public class MediaActivity extends FragmentActivity {
     public static final String EXTRA_PASTOR_NAME = "com.cfc.pastorName";
     public static final String EXTRA_SERMON_DATE = "com.cfc.sermonDate";
     public static final String EXTRA_SERMON_TITLE = "com.cfc.sermonTitle";
-    public static final String EXTRA_SERMON_UUID = "com.cfc.uuid";
 
     private String mMP3URL;
     private String mPastorName;
     private String mSermonDate;
     private String mSermonTitle;
-    private UUID sermonUUID;
 
 
     @Override
@@ -57,7 +56,6 @@ public class MediaActivity extends FragmentActivity {
         mPastorName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
         mPastorPhoto = (ImageView)findViewById(R.id.pastorPhoto);
         mSermonTitle = getIntent().getStringExtra(EXTRA_SERMON_TITLE);
-        sermonUUID = UUID.fromString(getIntent().getStringExtra(EXTRA_SERMON_UUID));
 
 
 
@@ -77,7 +75,6 @@ public class MediaActivity extends FragmentActivity {
         mTitle = (TextView)findViewById(R.id.media_title);
         mTitle.setText(mSermonTitle);
 
-        //Log.d("UUID found in player", sermonUUID.toString());
 
 
         Drawable new_image;
@@ -124,7 +121,7 @@ public class MediaActivity extends FragmentActivity {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SermonPlayer.get(MediaActivity.this, false).pauseplay();
+                SermonPlayer.get(MediaActivity.this, false).playPause(false, false);
 
             }
         });
@@ -156,13 +153,33 @@ public class MediaActivity extends FragmentActivity {
             }
         });
 
+        mPhoneStateListener = new PhoneStateListener(){
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                if (state == TelephonyManager.CALL_STATE_RINGING) {
+                    //Incoming call: Pause music
+                    //SermonPlayer.get(MediaActivity.this, false).playPause(false, true);
+                } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+                    //Not in call: Play music
+                    //SermonPlayer.get(MediaActivity.this, false).playPause(true, false);
+                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    //A call is dialing, active or on hold
+                    //SermonPlayer.get(MediaActivity.this, false).playPause(true, false);
+                }
+                super.onCallStateChanged(state, incomingNumber);
+            }
+        };
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if(mgr != null) {
+            mgr.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
 
 
         //start the sermon when new activity is created
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
 
 
-        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, sermonUUID, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
+        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
 
     }
 
