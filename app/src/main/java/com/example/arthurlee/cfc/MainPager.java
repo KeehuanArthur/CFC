@@ -231,6 +231,7 @@ public class MainPager extends ActionBarActivity
 
 
         Fragment fragment = new AboutFragment();
+        Fragment fragment2 = new SermonCategoryListFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -245,8 +246,15 @@ public class MainPager extends ActionBarActivity
 
             case 1:
                 fragmentManager.beginTransaction()
+                        .replace(R.id.mainContent, fragment2)
+                        .commit();
+                break;
+
+            case 2:
+                fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, fragment)
                         .commit();
+                break;
         }
 
 

@@ -47,15 +47,14 @@ public class SermonCategoryListFragment extends Fragment
         //for the categories List view
         mCategories = (ListView) v.findViewById(R.id.categories_list);
 
-        mSermonCategoriesAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(), R.layout.list_item_categories);
+        mSermonCategoriesAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(), R.layout.list_item_categories, R.id.list_item);
 
         mCategories.setAdapter(mSermonCategoriesAdapter);
 
-        mCategories.setAdapter(mSermonCategoriesAdapter);
-
-        mSermonCategoriesAdapter.add("test1");
-        mSermonCategoriesAdapter.add("test2");
-        mSermonCategoriesAdapter.add("test3");
+        mSermonCategoriesAdapter.add("Year");
+        mSermonCategoriesAdapter.add("Speaker");
+        mSermonCategoriesAdapter.add("Event");
+        mSermonCategoriesAdapter.add("Series");
 
 
 
