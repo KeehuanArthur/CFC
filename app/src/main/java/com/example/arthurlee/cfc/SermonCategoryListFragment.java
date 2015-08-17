@@ -69,13 +69,11 @@ public class SermonCategoryListFragment extends Fragment
 
         mRecent.setAdapter(mRecentSermonAdapter);
 
-        Sermon test = new Sermon();
-        test.setTitle("Test");
-        test.setSDate("test Date");
-        test.setPastor("Pastor name");
-        test.setScripture("Test");
 
-        mRecentSermonAdapter.add(test);
+        for( int i = 0; i < 24; i++ )
+        {
+            mRecentSermonAdapter.add(Constants.fullSermonList.get(i));
+        }
 
         return v;
     }
@@ -91,7 +89,7 @@ public class SermonCategoryListFragment extends Fragment
         public View getView(int position, View convertView, ViewGroup parent) {
             //If we weren't given a view, inflate one
             if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon_no_card, null);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon, null);
             }
 
             //Configure view for Sermon

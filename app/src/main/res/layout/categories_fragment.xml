@@ -12,14 +12,6 @@
     </ListView>
 
 
-    <View
-
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:layout_width="250dp"
-        android:layout_height="2dp"
-        android:background="#c0c0c0"/>
-
     <TextView
         android:text="@string/latest_sermons"
         android:textAlignment="center"
@@ -28,6 +20,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         />
+
+    <View
+
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"/>
 
 
 

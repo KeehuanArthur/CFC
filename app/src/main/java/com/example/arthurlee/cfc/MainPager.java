@@ -36,9 +36,7 @@ public class MainPager extends ActionBarActivity
 {
     public ListFragment sermonList;
     public static MobileAnalyticsManager analytics;
-    public static ArrayList<Sermon> sermonArrayList;
-    private ArrayList<String> mSermonCategories = new ArrayList<String>();
-
+    private SermonDownloader mSermonDownloader;
 
     //ViewPager viewPager;
 
@@ -85,13 +83,12 @@ public class MainPager extends ActionBarActivity
         //getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sermonList = new SermonListFragment();
 
-
+        mSermonDownloader = new SermonDownloader();
+        mSermonDownloader.getSermons();
 
         /*
         // Get the ViewPager and set it's PagerAdapter so that it can display items
