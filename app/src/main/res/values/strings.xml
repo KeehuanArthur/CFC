@@ -14,5 +14,6 @@
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer closed</string>
     <string name="website_button">Check out our website</string>
+    <string name="latest_sermons">Latest Sermons</string>
 
 </resources>

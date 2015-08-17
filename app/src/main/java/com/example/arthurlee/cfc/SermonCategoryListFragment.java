@@ -47,7 +47,7 @@ public class SermonCategoryListFragment extends Fragment
         //for the categories List view
         mCategories = (ListView) v.findViewById(R.id.categories_list);
 
-        mSermonCategoriesAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(), R.layout.list_item_categories, R.id.list_item);
+        mSermonCategoriesAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(), R.layout.list_item_categories, R.id.list_item_category_name);
 
         mCategories.setAdapter(mSermonCategoriesAdapter);
 
@@ -91,7 +91,7 @@ public class SermonCategoryListFragment extends Fragment
         public View getView(int position, View convertView, ViewGroup parent) {
             //If we weren't given a view, inflate one
             if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon, null);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon_no_card, null);
             }
 
             //Configure view for Sermon

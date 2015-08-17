@@ -11,6 +11,26 @@
 
     </ListView>
 
+
+    <View
+
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"/>
+
+    <TextView
+        android:text="@string/latest_sermons"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        />
+
+
+
     <ListView
         android:id="@+id/categories_latest_sermons"
         android:layout_width="match_parent"
