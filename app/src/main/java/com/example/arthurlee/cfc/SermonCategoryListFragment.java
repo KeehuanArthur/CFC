@@ -75,6 +75,8 @@ public class SermonCategoryListFragment extends Fragment
             mRecentSermonAdapter.add(Constants.fullSermonList.get(i));
         }
 
+        mRecent.setDivider(null);
+
         return v;
     }
 
