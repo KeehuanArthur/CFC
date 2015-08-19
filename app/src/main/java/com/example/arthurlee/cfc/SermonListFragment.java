@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,9 +37,6 @@ public class SermonListFragment extends ListFragment
     SermonAdapter mSermonAdapter;
     Context parentContext;
     Activity parentActivity;
-    private Button mPlayButton;
-    private Button mDownloadButton;
-    private AudioPlayer mPlayer = new AudioPlayer();
     private String play = "Play";
     private String pause = "PAUSE";
     private Timer mTimer;
@@ -104,18 +100,6 @@ public class SermonListFragment extends ListFragment
     }
 
 
-
-
-    /*
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
-    {
-        View v = inflater.inflate(R.layout.list_item_sermon, parent, false);
-
-        return v;
-    }
-    */
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -124,8 +108,6 @@ public class SermonListFragment extends ListFragment
         getListView().setDivider(null);
         getListView().setDividerHeight(0);
         getListView().setBackgroundColor(Color.WHITE);
-        //getListView().deferNotifyDataSetChanged();
-
 
     }
 

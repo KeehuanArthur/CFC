@@ -20,7 +20,7 @@
             android:textColor="#000000"
             />
 
-        <ImageButton
+        <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="@drawable/play_button"
@@ -28,6 +28,7 @@
             android:scaleType="fitCenter"
             android:layout_margin="5dp"
             />
+
 
     </RelativeLayout>
 

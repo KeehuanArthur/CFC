@@ -1,5 +1,7 @@
 package com.example.arthurlee.cfc;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,7 +53,12 @@ public class Sermon
     }
 
     public String getSDate() {
-        return mSDate;
+
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+        return dateFormat.format(mDate);
+
+        //return mSDate;
     }
 
     public void setSDate(String SDate) {

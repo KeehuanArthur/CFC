@@ -238,18 +238,22 @@ public class MainPager extends ActionBarActivity
             case 0:
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, sermonList)
+                        .addToBackStack("main")
                         .commit();
                 break;
 
             case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, fragment2)
+                        .addToBackStack("main")
                         .commit();
                 break;
 
             case 2:
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, fragment)
+                        .addToBackStack("main")
+
                         .commit();
                 break;
         }

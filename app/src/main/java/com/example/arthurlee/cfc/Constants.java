@@ -15,4 +15,6 @@ public class Constants
     public static String nowPlayingUrl;
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();
     //note: newest is smallest
+
+    public static String categoryName;
 }

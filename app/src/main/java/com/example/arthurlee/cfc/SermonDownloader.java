@@ -1,6 +1,7 @@
 package com.example.arthurlee.cfc;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -8,6 +9,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by arthurlee on 8/16/15.
@@ -124,12 +128,20 @@ public class SermonDownloader
                                             break;
 
                                         case XmlPullParser.END_TAG:
-                                            if (name.equals("pubDate")) {
-                                                smallDate = text.substring(0, 16);
-                                                s.setSDate(smallDate);
-                                            } else if (name.equals("itunes:author")) {
+                                            if (name.equals("pubDate"))
+                                            {
+                                                s.setDate(parseDate(text));
+                                            }
+                                            else if (name.equals("itunes:author"))
+                                            {
                                                 s.setPastor(text);
-                                            } else if (name.equals("itunes:passage")) {
+                                            }
+                                            else if (name.equals("itunes:series"))
+                                            {
+                                                s.setEvent(text);
+                                            }
+                                            else if (name.equals("itunes:passage"))
+                                            {
                                                 s.setScripture(text);
                                                 sermonFinished = true;
                                             }
@@ -153,6 +165,20 @@ public class SermonDownloader
             {
                 e.printStackTrace();
             }
+        }
+
+        //throws Exception is for the DateFormat parsing function
+        public Date parseDate(String stringDate) throws Exception
+        {
+            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+            String prepDate = stringDate.substring(5, 16);
+            Log.d("dateParse", prepDate);
+
+            Date sermon_date = dateFormat.parse(prepDate);
+
+            return sermon_date;
+            //return prepDate;
         }
 
     }
