@@ -1,7 +1,6 @@
 package com.example.arthurlee.cfc;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -21,6 +20,8 @@ import java.util.Date;
 public class SermonDownloader
 {
     private static String urlString = "http://cfchome.org/feed/sermons/";
+    private String jsonURL = "http://s3.amazonaws.com/awctestbucket1/sermonInfo_version3.json";
+
     private String smallDate;
     XmlPullParserFactory xmlFactoryObject;
 
@@ -28,6 +29,10 @@ public class SermonDownloader
     {
         new getSermonsXML().execute();
     }
+
+
+    //-------------------------------------------------------------------------------------------
+    //XML Version of getting sermons
 
     public class getSermonsXML extends AsyncTask<Void, Void, Void>
     {
@@ -173,7 +178,6 @@ public class SermonDownloader
             DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
 
             String prepDate = stringDate.substring(5, 16);
-            Log.d("dateParse", prepDate);
 
             Date sermon_date = dateFormat.parse(prepDate);
 
@@ -183,4 +187,90 @@ public class SermonDownloader
 
     }
 
+
+    //-------------------------------------------------------------------------------------------
+    //JSON version of getting sermons
+    //note that there are 2 different Void types. ie void vs Void
+
+/*
+    private class getSermonsJSON extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0)
+        {
+            // Creating service handler class instance
+            ServiceHandler sh = new ServiceHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(jsonURL, ServiceHandler.GET);
+
+            Log.d("Response: ", "> " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    // Getting JSON Array node
+                    jsonSermonList = jsonObj.getJSONArray(TAG_SERMONS);
+
+                    // looping through All Sermons
+                    for (int i = 0; i < jsonSermonList.length(); i++)
+                    {
+                        JSONObject js = jsonSermonList.getJSONObject(i);
+
+                        String title = js.getString(TAG_TITLE);
+                        String pastor = js.getString(TAG_SPEAKER);
+                        String date = js.getString(TAG_DATE);
+                        String mp3URL = js.getString(TAG_FILENAME);
+                        String scripture = js.getString(TAG_SCRIPTURE);
+                        String event = js.getString(TAG_EVENT);
+
+
+                        //create new sermon object
+                        final Sermon s = new Sermon();
+                        s.setTitle(title);
+                        s.setPastor(pastor);
+                        s.setSDate(date);
+                        s.setMp3url(mp3URL);
+                        s.setScripture(scripture);
+                        s.setEvent(event);
+
+
+
+                        getActivity().runOnUiThread(new Runnable(){
+                            public void run()
+                            {
+                                //add sermon into SermonAdapter (Array Adapter)
+                                mSermonAdapter.insert(s, mSermonAdapter.getCount());
+                            }
+                        });
+
+                    }
+                    //mSermonAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Log.e("ServiceHandler", "Couldn't get any data from the url");
+            }
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            super.onPreExecute();
+
+        }
+    }
+
+*/
 }

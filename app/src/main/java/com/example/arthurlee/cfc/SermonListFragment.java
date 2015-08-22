@@ -158,6 +158,8 @@ public class SermonListFragment extends ListFragment
             super(getActivity(), 0, sermons);
         }
 
+
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
@@ -165,6 +167,7 @@ public class SermonListFragment extends ListFragment
             if(convertView == null)
             {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon, null);
+                Log.d("new view created", Integer.toString(position));
             }
 
             //Configure view for Sermon

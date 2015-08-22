@@ -1,5 +1,6 @@
 package com.example.arthurlee.cfc;
 
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,16 +39,21 @@ public class CategoryListFragment extends ListFragment
                 populateDates();
                 break;
 
+            case("Speaker"):
+                populateSpeaker();
+                break;
+
+            case("Series"):
+                populateSeries();
+                break;
+
             default:
                 mCategoryItemsAdapter.add("test 1");
                 mCategoryItemsAdapter.add("test 2");
                 break;
         }
 
-
-
         setListAdapter(mCategoryItemsAdapter);
-
 
     }
 
@@ -56,6 +62,20 @@ public class CategoryListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        Constants.searchFor = mCategoryItemsAdapter.getItem(position).toString();
+
+        Log.d("CategoryList", Constants.searchFor);
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        Log.d("CategoryList", "Click registered");
+
+        ListFragment specificSermonListFragment = new SpecificSermonListFragment();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.mainContent, specificSermonListFragment)
+                .addToBackStack("Specific Category")
+                .commit();
 
 
     }
@@ -75,6 +95,37 @@ public class CategoryListFragment extends ListFragment
             curYear --;
         }
 
+    }
+
+    private void populateSpeaker()
+    {
+        mCategoryItemsAdapter.add("Rev. Min Chung");
+        mCategoryItemsAdapter.add("Rev. KJ Kim");
+        mCategoryItemsAdapter.add("Rev. David Kang");
+        mCategoryItemsAdapter.add("Pastor Sean Lee");
+        mCategoryItemsAdapter.add("Pastor Tony Thomas");
+        mCategoryItemsAdapter.add("Guest Speakers");
+    }
+
+    private void populateSeries()
+    {
+        String[] booksOfBible = { "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges",
+                                    "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles",
+                                    "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalms",
+                                    "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah",
+                                    "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah",
+                                    "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah",
+                                    "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians",
+                                    "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians",
+                                    "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus",
+                                    "Philemon", "Hebrew", "James", "1 Peter", "2 Peter", "1 John", "2 John",
+                                    "3 John", "Jude", "Revelation"
+        };
+
+        for(int i = 0; i < 66; i++)
+        {
+            mCategoryItemsAdapter.add(booksOfBible[i]);
+        }
     }
 
 }

@@ -17,4 +17,5 @@ public class Constants
     //note: newest is smallest
 
     public static String categoryName;
+    public static String searchFor;
 }

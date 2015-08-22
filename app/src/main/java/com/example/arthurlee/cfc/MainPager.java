@@ -166,6 +166,12 @@ public class MainPager extends ActionBarActivity
         mDrawerToggle.syncState();
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        getFragmentManager().popBackStack();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -228,7 +234,7 @@ public class MainPager extends ActionBarActivity
 
 
         Fragment fragment = new AboutFragment();
-        Fragment fragment2 = new SermonCategoryListFragment();
+        Fragment fragment2 = new LibraryFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
 

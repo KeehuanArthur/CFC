@@ -98,10 +98,6 @@ public class SermonCategoryListFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
-                Log.d("SermonCategory", "clicked item");
-
-
                 fragmentManager = getFragmentManager();
 
                 switch (position)
@@ -140,8 +136,6 @@ public class SermonCategoryListFragment extends Fragment
         AdapterView.OnItemClickListener clickedLatestSermon = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.d("SermonCategory", "Sermon Clicked");
 
                 //New Activity Stuff
                 Sermon s = mRecentSermonAdapter.getItem(position);
