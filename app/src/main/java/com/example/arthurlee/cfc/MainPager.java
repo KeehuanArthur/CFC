@@ -36,7 +36,7 @@ public class MainPager extends ActionBarActivity
 {
     public ListFragment sermonList;
     public static MobileAnalyticsManager analytics;
-    private SermonDownloader mSermonDownloader;
+
 
     //ViewPager viewPager;
 
@@ -67,7 +67,7 @@ public class MainPager extends ActionBarActivity
         //My mobile analytics account number: 9d2215ddf13640a3a131bf5a821c57f0
 
 
-
+        //Set up Amazon Mobile Analytics
         try {
             analytics = MobileAnalyticsManager.getOrCreateInstance(
                     this.getApplicationContext(),
@@ -79,16 +79,29 @@ public class MainPager extends ActionBarActivity
         }
 
 
+
+        //Download Sermons and Announcements
+        SermonDownloader sermonDownloader = new SermonDownloader();
+        sermonDownloader.getSermons();
+
+        AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
+        announcementDownloader.getAnnouncements();
+
+
+
+        //Set up view layouts
         setContentView(R.layout.activity_main);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
 
         sermonList = new SermonListFragment();
 
-        mSermonDownloader = new SermonDownloader();
-        mSermonDownloader.getSermons();
+
+
+
+
 
         /*
         // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -113,10 +126,13 @@ public class MainPager extends ActionBarActivity
         this.getSupportActionBar().setElevation(0);
         */
 
+
+
+
+        //set up Navigation Items (side menu)
         mNavItems.add(new NavItem("Home", "", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("Library", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.abc_ic_commit_search_api_mtrl_alpha));
-        //mNavItems.add(new NavItem("About", "Get to know about us", R.drawable.abc_ic_clear_mtrl_alpha));
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 
@@ -235,6 +251,7 @@ public class MainPager extends ActionBarActivity
 
         Fragment fragment = new AboutFragment();
         Fragment fragment2 = new LibraryFragment();
+        Fragment homeFragment = new HomeFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -243,7 +260,7 @@ public class MainPager extends ActionBarActivity
         {
             case 0:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.mainContent, sermonList)
+                        .replace(R.id.mainContent, homeFragment)
                         .addToBackStack("main")
                         .commit();
                 break;
