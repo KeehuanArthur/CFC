@@ -63,6 +63,7 @@ public class Sermon
 
     public void setSDate(String SDate) {
         mSDate = SDate;
+
     }
 
     public String getMp3url() {

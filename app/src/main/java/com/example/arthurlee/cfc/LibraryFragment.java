@@ -29,8 +29,8 @@ public class LibraryFragment extends ListFragment
         mSermonArrayList = new ArrayList<>();
         mLibraryAdapter = new LibraryAdapter(mSermonArrayList);
 
-        //put in 4 blank sermons. These will not be displayed. The first 4 itemns in the
-        //Libray adapter are overwritten with category names
+        //put in 4 blank sermons. These will not be displayed. The first 4 itemn in the
+        //Library adapter are overwritten with category names
         for( int i = 0; i < 4; i++)
         {
             mLibraryAdapter.add(new Sermon());
@@ -143,17 +143,6 @@ public class LibraryFragment extends ListFragment
         public LibraryAdapter(ArrayList<Sermon> sermons)
         {
             super(getActivity(), 0, sermons);
-
-
-            //these are some blank sermons. They will not be accessed because of the way
-            //the get function is set up. They will be replaced with the categories
-            /*
-            for( int i = 0; i < 4; i++)
-            {
-                this.add(new Sermon());
-            }
-            */
-
         }
 
         public View getCategoryView(int position, View convertView)
@@ -172,7 +161,7 @@ public class LibraryFragment extends ListFragment
                     categoryName.setText("Event");
                     break;
                 case 3:
-                    categoryName.setText("Speaker");
+                    categoryName.setText("Series");
                     break;
             }
 
@@ -237,8 +226,6 @@ public class LibraryFragment extends ListFragment
                     convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_sermon, null);
                 }
             }
-
-            //Log.d("Library Fragment: ", Integer.toString(position));
 
 
             //for categories return general text view

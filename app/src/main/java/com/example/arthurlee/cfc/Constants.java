@@ -22,6 +22,7 @@ public class Constants
     //Array Lists
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();
     public static ArrayList<Announcement> announcementsList = new ArrayList<>();
+    public static ArrayList<String>eventList = new ArrayList<>();
 
 
 

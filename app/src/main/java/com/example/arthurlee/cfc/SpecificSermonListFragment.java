@@ -32,20 +32,34 @@ public class SpecificSermonListFragment extends ListFragment
     {
         super.onCreate(savedInstanceState);
 
+        getListView().setDivider(null);
+
         switch (Constants.categoryName)
         {
             case("Year"):
-                searchByDate();
+                searchByDate(Constants.searchFor);
+                break;
+
+            case("Speaker"):
+                searchBySpeaker(Constants.searchFor);
+                break;
+
+            case("Event"):
+                searchByEvent(Constants.searchFor);
+                break;
+
+            case("Series"):
+                searchBySeries(Constants.searchFor);
                 break;
         }
     }
 
 
-    private void searchByDate()
+    private void searchByDate(String searchFor)
     {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy");
-        int searchYear = Integer.parseInt(Constants.searchFor);
+        int searchYear = Integer.parseInt(searchFor);
         int sermonYear;
         Date sermonDate;
 
@@ -59,6 +73,35 @@ public class SpecificSermonListFragment extends ListFragment
                 mSermonAdapter.add(Constants.fullSermonList.get(i));
             }
         }
+
+    }
+
+    private void searchBySpeaker(String searchFor)
+    {
+        for( int i = 0; i < Constants.fullSermonList.size(); i++ )
+        {
+            Sermon s = Constants.fullSermonList.get(i);
+            if( (s.getPastor()).equals(searchFor))
+            {
+                mSermonAdapter.add(s);
+            }
+        }
+    }
+
+    public void searchByEvent(String searchFor)
+    {
+        for( int i = 0; i < Constants.fullSermonList.size(); i++ )
+        {
+            Sermon s = Constants.fullSermonList.get(i);
+            if( (s.getEvent()).equals(searchFor))
+            {
+                mSermonAdapter.add(s);
+            }
+        }
+    }
+
+    public void searchBySeries(String searchFor)
+    {
 
     }
 

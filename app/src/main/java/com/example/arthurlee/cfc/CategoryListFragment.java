@@ -47,6 +47,10 @@ public class CategoryListFragment extends ListFragment
                 populateSeries();
                 break;
 
+            case("Events"):
+                populateEvents();
+                break;
+
             default:
                 mCategoryItemsAdapter.add("test 1");
                 mCategoryItemsAdapter.add("test 2");
@@ -104,6 +108,7 @@ public class CategoryListFragment extends ListFragment
         mCategoryItemsAdapter.add("Rev. David Kang");
         mCategoryItemsAdapter.add("Pastor Sean Lee");
         mCategoryItemsAdapter.add("Pastor Tony Thomas");
+        mCategoryItemsAdapter.add("Pastor Jim Han");
         mCategoryItemsAdapter.add("Guest Speakers");
     }
 
@@ -125,6 +130,14 @@ public class CategoryListFragment extends ListFragment
         for(int i = 0; i < 66; i++)
         {
             mCategoryItemsAdapter.add(booksOfBible[i]);
+        }
+    }
+
+    private void populateEvents()
+    {
+        for( int i = 0; i < Constants.eventList.size(); i++ )
+        {
+            mCategoryItemsAdapter.add(Constants.eventList.get(i));
         }
     }
 

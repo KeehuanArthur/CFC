@@ -2,7 +2,6 @@ package com.example.arthurlee.cfc;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 
 public class MainPager extends ActionBarActivity
 {
-    public ListFragment sermonList;
     public static MobileAnalyticsManager analytics;
 
 
@@ -81,8 +79,15 @@ public class MainPager extends ActionBarActivity
 
 
         //Download Sermons and Announcements
+        //SermonDownloader sermonDownloader = new SermonDownloader();
+        //sermonDownloader.getSermons();
+
+        LocalJSONManager sermonManager = new LocalJSONManager(this);
+        sermonManager.parseLocalJSON();
+
         SermonDownloader sermonDownloader = new SermonDownloader();
-        sermonDownloader.getSermons();
+        sermonDownloader.checkForNewSermons();
+
 
         AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
         announcementDownloader.getAnnouncements();
@@ -96,7 +101,6 @@ public class MainPager extends ActionBarActivity
 
 
 
-        sermonList = new SermonListFragment();
 
 
 
@@ -249,9 +253,10 @@ public class MainPager extends ActionBarActivity
     private void selectItemFromDrawer(int position) {
 
 
-        Fragment fragment = new AboutFragment();
-        Fragment fragment2 = new LibraryFragment();
-        Fragment homeFragment = new HomeFragment();
+
+        Fragment aboutFragment;
+        Fragment libraryFragment;
+        Fragment homeFragment;
 
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -259,6 +264,7 @@ public class MainPager extends ActionBarActivity
         switch (position)
         {
             case 0:
+                homeFragment = new HomeFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, homeFragment)
                         .addToBackStack("main")
@@ -266,15 +272,23 @@ public class MainPager extends ActionBarActivity
                 break;
 
             case 1:
+
+                for( int i = 0; i < 5; i ++ )
+                {
+                    Log.d("Test sermons", Constants.fullSermonList.get(i).getTitle());
+                }
+
+                libraryFragment = new LibraryFragment();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.mainContent, fragment2)
+                        .replace(R.id.mainContent, libraryFragment)
                         .addToBackStack("main")
                         .commit();
                 break;
 
             case 2:
+                aboutFragment = new AboutFragment();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.mainContent, fragment)
+                        .replace(R.id.mainContent, aboutFragment)
                         .addToBackStack("main")
 
                         .commit();

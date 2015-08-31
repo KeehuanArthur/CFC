@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment
         View announcementCard = inflater.inflate(R.layout.list_item_announcement, parent, false);
 
         TextView announcementTitle = (TextView)announcementCard.findViewById(R.id.list_item_announcement_Title);
-        ImageView announcementImage = (ImageView)announcementCard.findViewById(R.id.list_item_announccement_image);
+        ImageView announcementImage = (ImageView)announcementCard.findViewById(R.id.list_item_announcement_image);
 
         Announcement a = Constants.announcementsList.get(announcementNumber);
 
