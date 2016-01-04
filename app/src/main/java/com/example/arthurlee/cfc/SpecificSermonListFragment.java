@@ -2,6 +2,9 @@ package com.example.arthurlee.cfc;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,6 +57,12 @@ public class SpecificSermonListFragment extends ListFragment
         }
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+        
+    }
+
 
     private void searchByDate(String searchFor)
     {
@@ -71,6 +80,7 @@ public class SpecificSermonListFragment extends ListFragment
             if ( searchYear == sermonYear )
             {
                 mSermonAdapter.add(Constants.fullSermonList.get(i));
+                Log.d("Specific Sermon", "added sermon");
             }
         }
 
@@ -84,6 +94,8 @@ public class SpecificSermonListFragment extends ListFragment
             if( (s.getPastor()).equals(searchFor))
             {
                 mSermonAdapter.add(s);
+                Log.d("Specific Sermon", "added sermon");
+
             }
         }
     }
@@ -96,13 +108,18 @@ public class SpecificSermonListFragment extends ListFragment
             if( (s.getEvent()).equals(searchFor))
             {
                 mSermonAdapter.add(s);
+                Log.d("Specific Sermon", "added sermon");
             }
         }
     }
 
     public void searchBySeries(String searchFor)
     {
+        for( int i = 0; i < Constants.fullSermonList.size(); i++ )
+        {
+            Sermon s = Constants.fullSermonList.get(i);
 
+        }
     }
 
 }

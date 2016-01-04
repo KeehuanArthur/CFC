@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,10 +31,10 @@ import java.util.ArrayList;
 
 //note: this is the main activity. Its just called MainPager cus the app used to use pagers
 
-public class MainPager extends ActionBarActivity
+//public class MainPager extends ActionBarActivity
+public class MainPager extends AppCompatActivity
 {
     public static MobileAnalyticsManager analytics;
-
 
     //ViewPager viewPager;
 
@@ -97,13 +97,6 @@ public class MainPager extends ActionBarActivity
         //Set up view layouts
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-
-
-
-
 
 
 

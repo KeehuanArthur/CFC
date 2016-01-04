@@ -72,8 +72,6 @@ public class CategoryListFragment extends ListFragment
 
         FragmentManager fragmentManager = getFragmentManager();
 
-        Log.d("CategoryList", "Click registered");
-
         ListFragment specificSermonListFragment = new SpecificSermonListFragment();
 
         fragmentManager.beginTransaction()
