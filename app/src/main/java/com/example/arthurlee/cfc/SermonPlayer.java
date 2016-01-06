@@ -49,7 +49,8 @@ public class SermonPlayer extends Object {
     }
 
 
-    //call this function to use singleton
+    // call this function to use singleton
+    // make sure to distinguish if call is from service or not
     public static SermonPlayer get(Context c, boolean fromService)
     {
         if(sSermonPlayer == null)
@@ -83,8 +84,6 @@ public class SermonPlayer extends Object {
 
             //check if you are clicking the same sermon. If you clicked the sermon that is playing
             //already, don't restart the sermon
-
-
             if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart) {
 
                 Log.d("SermonPlayer","play entered init phase");

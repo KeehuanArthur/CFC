@@ -17,7 +17,7 @@ public class Constants
 
     public static String categoryName;
     public static String searchFor;
-
+    public static boolean doneUpdatingSermons;
 
     //Array Lists
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();

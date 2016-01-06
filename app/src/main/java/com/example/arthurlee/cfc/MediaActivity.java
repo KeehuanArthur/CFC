@@ -1,6 +1,7 @@
 package com.example.arthurlee.cfc;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,11 +38,14 @@ public class MediaActivity extends FragmentActivity {
     public static final String EXTRA_PASTOR_NAME = "com.cfc.pastorName";
     public static final String EXTRA_SERMON_DATE = "com.cfc.sermonDate";
     public static final String EXTRA_SERMON_TITLE = "com.cfc.sermonTitle";
+    public static final String EXTRA_SERMON_SCRIPTURE = "com.cfc.sermonScripture";
+
 
     private String mMP3URL;
     private String mPastorName;
     private String mSermonDate;
     private String mSermonTitle;
+    private String mSermonScripture;
 
 
     @Override
@@ -56,7 +60,7 @@ public class MediaActivity extends FragmentActivity {
         mPastorName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
         mPastorPhoto = (ImageView)findViewById(R.id.pastorPhoto);
         mSermonTitle = getIntent().getStringExtra(EXTRA_SERMON_TITLE);
-
+        mSermonScripture = getIntent().getStringExtra(EXTRA_SERMON_SCRIPTURE);
 
 
         AnalyticsEvent testEvent = MainPager.analytics.getEventClient().createEvent("test")
@@ -70,7 +74,6 @@ public class MediaActivity extends FragmentActivity {
             MainPager.analytics.getSessionClient().pauseSession();
         }
         */
-
 
         mTitle = (TextView)findViewById(R.id.media_title);
         mTitle.setText(mSermonTitle);
@@ -175,10 +178,21 @@ public class MediaActivity extends FragmentActivity {
         }
 
 
+        // set up the notification center controls
+
+        Intent intent = new Intent( getApplicationContext(), DropdownControls.class );
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, mSermonTitle);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mPastorName);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, mSermonDate);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, mSermonScripture);
+
+        intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
+        getApplicationContext().startService(intent);
+
+
+
         //start the sermon when new activity is created
         //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
-
-
         SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
 
     }

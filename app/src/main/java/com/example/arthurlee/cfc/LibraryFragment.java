@@ -111,6 +111,7 @@ public class LibraryFragment extends ListFragment
         i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
         i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
         i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+        i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, s.getScripture());
 
         //Set Global Vars
         Constants.nowPlayingTitle = s.getTitle();
@@ -119,6 +120,8 @@ public class LibraryFragment extends ListFragment
         Constants.nowPlayingDate = s.getSDate();
         Constants.nowPlayingUrl = s.getMp3url();
 
+
+        /*
         //start notification controller here
         Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, s.getTitle());
@@ -129,7 +132,7 @@ public class LibraryFragment extends ListFragment
 
         intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
         getActivity().getApplicationContext().startService(intent);
-
+        */
 
         startActivity(i);
 

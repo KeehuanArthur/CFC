@@ -18,6 +18,7 @@ public class DropdownControls extends Service
 {
     public static final String ACTION_NOTIFICATION_PLAY_PAUSE = "action_notification_playpause";
     public static final String ACTION_NOTIFICATION_CLOSE = "action_notification_close";
+    public static final String ACTION_NOTIFICATION_CLICKSELF = "action_notification_clickself";
     public static final String ACTION_NOTIFICATION_NULL = "null";
 
 
@@ -79,17 +80,24 @@ public class DropdownControls extends Service
                 //showNotification(mIsPlaying);
                 updateNotification();
             }
-            if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
+            else if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
             {
                 mIsPlaying = false;
                 showNotification(mIsPlaying);
             }
 
-            if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLOSE))
+            else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLOSE))
             {
-                Log.d("handling close", "handling close" );
                 SermonPlayer.get(getBaseContext(),true).stop();
                 mManager.cancelAll();
+            }
+
+            else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLICKSELF))
+            {
+                Log.d("clicked self", "clicked self");
+                Intent restartIntent = new Intent(getBaseContext(), MainPager.class);
+                restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(restartIntent);
             }
 
         }
@@ -111,8 +119,6 @@ public class DropdownControls extends Service
 
         displayNotification();
     }
-
-
 
 
     private void updateNotification()
@@ -153,10 +159,13 @@ public class DropdownControls extends Service
         PendingIntent pendingIntent = PendingIntent.getService( getApplicationContext(), 1, intent, 0 );
         mCustomRemoteView.setOnClickPendingIntent( R.id.notification_playpause, pendingIntent );
 
-
         intent.setAction(ACTION_NOTIFICATION_CLOSE);
         pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
         mCustomRemoteView.setOnClickPendingIntent(R.id.notification_close, pendingIntent);
+
+        intent.setAction(ACTION_NOTIFICATION_CLICKSELF);
+        pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
+        mCustomRemoteView.setOnClickPendingIntent(R.id.notification_controller, pendingIntent);
 
         return mCustomRemoteView;
     }

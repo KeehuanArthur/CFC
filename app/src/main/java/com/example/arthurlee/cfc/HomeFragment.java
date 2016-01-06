@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,12 +68,25 @@ public class HomeFragment extends Fragment
         TextView sermonDate = (TextView)sermonCard.findViewById(R.id.sermon_list_item_dateTextView);
         TextView sermonPassage = (TextView)sermonCard.findViewById(R.id.sermon_list_item_passage);
 
+        /*   commented block was going to be used to check if there's a way to check when sermon parsing is done
+             by seeing if null is returned by arraylist. remember to take into consideration that there's also internal JSON file
+             containing sermons that are also parsed
+        ArrayList<Sermon> fullsermon
+        if(s == null )
+            Log.d("didn't receive sermon:", "null returned");
+        */
         Sermon s = Constants.fullSermonList.get(sermonNumber);
+
+
 
         sermonTitle.setText(s.getTitle());
         sermonSpeaker.setText(s.getPastor());
         sermonDate.setText(s.getSDate());
         sermonPassage.setText(s.getScripture());
+
+        RelativeLayout.LayoutParams recentSermonCardParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+        sermonCard.setLayoutParams(recentSermonCardParams);
 
         return sermonCard;
     }

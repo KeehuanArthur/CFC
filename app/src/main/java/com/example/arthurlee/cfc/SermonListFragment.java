@@ -30,6 +30,11 @@ import java.util.Timer;
 
 /**
  * Created by arthurlee on 7/3/15.
+ *
+ * This file used to be its own fragment but now it just used to contain fucntions
+ *
+ * contains 2 way of getting sermons XML and JSON
+ * contains function that gets called once sermon paring and downloading is finished
  */
 public class SermonListFragment extends ListFragment
 {
