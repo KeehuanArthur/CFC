@@ -40,7 +40,6 @@ public class DropdownControls extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.d("handeling intent", "handeling intent");
         handleIntent(intent);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -58,6 +57,13 @@ public class DropdownControls extends Service
 
     }
 
+    // this is used to remove the dropdown notification controls from the notifications tray after
+    // removing the app from the recent apps list
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        mManager.cancelAll();
+
+    }
 
     public void onDestory()
     {

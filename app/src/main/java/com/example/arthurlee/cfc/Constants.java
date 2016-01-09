@@ -24,7 +24,11 @@ public class Constants
     public static ArrayList<Announcement> announcementsList = new ArrayList<>();
     public static ArrayList<String>eventList = new ArrayList<>();
 
-
+    // Sermon Category numbers
+    public static int YEAR = 0;
+    public static int SPEAKER = 1;
+    public static int EVENT = 2;
+    public static int SERIES = 3;
 
     //URLS
     public static String sermonsURL = "http://cfchome.org/sermons-json/";

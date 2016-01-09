@@ -2,6 +2,7 @@ package com.example.arthurlee.cfc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by arthurlee on 7/29/15.
  *
- * this is a singleton
+ * this is a singleton because you don't want 2 sermons to be playing at the same time
  */
 public class SermonPlayer extends Object {
 
@@ -34,6 +35,8 @@ public class SermonPlayer extends Object {
     private TextView mTotalTime;
     private SeekBar mSeekBar;
     private ImageButton mPlayPauseButton;
+
+    private Intent notificationIntent;
 
 
     public MediaPlayer getMediaPlayer() {
@@ -85,8 +88,6 @@ public class SermonPlayer extends Object {
             //check if you are clicking the same sermon. If you clicked the sermon that is playing
             //already, don't restart the sermon
             if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart) {
-
-                Log.d("SermonPlayer","play entered init phase");
 
                 sSermonPlayer.mp3Url = url;
 
@@ -183,10 +184,23 @@ public class SermonPlayer extends Object {
                 sSermonPlayer.mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         stop();
-                        //make it start from beginning
+                        //todo: make it start from beginning
                     }
                 });
 
+                /*
+                // set up the notification center controls via android service
+                final Context baseContext = sAppContext;
+                notificationIntent = new Intent( baseContext, DropdownControls.class );
+                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, "Temp Title");
+                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, "Temp Pastor Name");
+                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, "Temp Date");
+                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, "Temp Passage");
+
+                notificationIntent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
+                sAppContext.getApplicationContext().startService(notificationIntent);
+                //MediaActivity.getApplicationContext().startService(intent);
+                */
             }
 
             else
@@ -241,6 +255,11 @@ public class SermonPlayer extends Object {
                     }
 
                     sSermonPlayer.mCurrentTime.setText(minStr + ":" + secStr);
+                }
+                else
+                {
+                    Log.d("Sermon Player", "Sermon Player just died");
+                    sAppContext.getApplicationContext().stopService(notificationIntent);
 
                 }
             }

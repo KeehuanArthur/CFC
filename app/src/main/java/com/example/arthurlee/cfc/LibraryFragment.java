@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -104,6 +105,8 @@ public class LibraryFragment extends ListFragment
 
     private void startSermonPlayer(int sermonNumber)
     {
+        Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
+
         //New Activity Stuff
         Sermon s = mLibraryAdapter.getItem(sermonNumber);
         Intent i = new Intent(getActivity(), MediaActivity.class);

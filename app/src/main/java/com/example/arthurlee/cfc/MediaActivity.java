@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -84,35 +85,35 @@ public class MediaActivity extends FragmentActivity {
         switch (mPastorName)
         {
             case "Rev. Min Chung":
-                new_image = getResources().getDrawable(R.drawable.pmin);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pmin);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor KJ Kim":
-                new_image = getResources().getDrawable(R.drawable.pkj);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pkj);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Rev. KJ Kim":
-                new_image = getResources().getDrawable(R.drawable.pkj);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pkj);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor Jim Han":
-                new_image = getResources().getDrawable(R.drawable.pjim);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pjim);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor Tony Thomas":
-                new_image = getResources().getDrawable(R.drawable.ptony);
+                new_image = ContextCompat.getDrawable(this, R.drawable.ptony);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor David Kang":
-                new_image = getResources().getDrawable(R.drawable.pdave);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pdave);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Rev. David Kang":
-                new_image = getResources().getDrawable(R.drawable.pdave);
+                new_image = ContextCompat.getDrawable(this, R.drawable.pdave);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor Sean Lee":
-                new_image = getResources().getDrawable(R.drawable.psean);
+                new_image = ContextCompat.getDrawable(this, R.drawable.psean);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
 
@@ -178,9 +179,9 @@ public class MediaActivity extends FragmentActivity {
         }
 
 
-        // set up the notification center controls
-
-        Intent intent = new Intent( getApplicationContext(), DropdownControls.class );
+        // set up the notification center controls via android service
+        final Context baseContext = getApplicationContext();
+        Intent intent = new Intent( baseContext, DropdownControls.class );
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, mSermonTitle);
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mPastorName);
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, mSermonDate);
@@ -202,6 +203,7 @@ public class MediaActivity extends FragmentActivity {
         super.finish();
         overridePendingTransition(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
     }
+
 
 
 }

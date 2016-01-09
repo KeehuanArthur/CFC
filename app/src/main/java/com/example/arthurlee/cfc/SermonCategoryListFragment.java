@@ -18,6 +18,9 @@ import java.util.ArrayList;
 
 /**
  * Created by arthurlee on 8/16/15.
+ *
+ * This should be named Library Fragment
+ * this is the fragment that shows the categories at the top then the most recent sermons at the bottom
  */
 public class SermonCategoryListFragment extends Fragment
 {
@@ -82,7 +85,6 @@ public class SermonCategoryListFragment extends Fragment
         }
 
         mRecent.setDivider(null);
-
 
 
         return v;
@@ -171,9 +173,6 @@ public class SermonCategoryListFragment extends Fragment
         };
 
         mRecent.setOnItemClickListener(clickedLatestSermon);
-
-
-
 
 
     }

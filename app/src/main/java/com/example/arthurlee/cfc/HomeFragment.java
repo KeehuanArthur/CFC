@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment
         for(int i = 0; i < Constants.announcementsList.size(); i++)
         {
             mAnnouncementsLayout.addView(getAnnouncementCard(i, inflater, parent));
-
         }
 
         return v;
