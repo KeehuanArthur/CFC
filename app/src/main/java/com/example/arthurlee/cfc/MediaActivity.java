@@ -188,6 +188,7 @@ public class MediaActivity extends FragmentActivity {
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, mSermonScripture);
 
         intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
+
         getApplicationContext().startService(intent);
 
 

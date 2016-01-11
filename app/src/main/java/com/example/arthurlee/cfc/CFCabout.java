@@ -19,6 +19,7 @@ public class CFCabout extends Fragment
 
     private int mPage;
     private Button mWebsiteButton;
+    private Button mFacebookButton;
 
     public static CFCabout newInstance(int page) {
         //Bundle args = new Bundle();
@@ -48,6 +49,16 @@ public class CFCabout extends Fragment
             public void onClick(View v)
             {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.cfchome.org"));
+                startActivity(browserIntent);
+            }
+        });
+
+        mFacebookButton = (Button)view.findViewById( R.id.facebook_button);
+        mFacebookButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/cfchomeIllinois/?fref=ts"));
                 startActivity(browserIntent);
             }
         });

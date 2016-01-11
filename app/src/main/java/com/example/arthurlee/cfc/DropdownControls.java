@@ -13,6 +13,10 @@ import android.widget.RemoteViews;
 
 /**
  * Created by arthurlee on 8/12/15.
+ *
+ * This class is used to control the media controller through the notification center
+ * it uses the Notification builder and is created though a background service.
+ * don't really remember why i made it this way TT_TT
  */
 public class DropdownControls extends Service
 {
@@ -120,6 +124,7 @@ public class DropdownControls extends Service
                 .build();
 
         mSermonController.bigContentView = getExpandedView( isPlaying );
+        mSermonController.priority = Notification.PRIORITY_HIGH;
         mSermonController.flags = Notification.FLAG_ONGOING_EVENT;
 
 

@@ -36,12 +36,28 @@
         android:gravity="center"/>
 
 
-    <Button
-        android:id="@+id/about_website_button"
-        android:text="@string/website_button"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/about_website_button"
+            android:text="@string/website_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/facebook_button"
+            android:text="@string/facebook_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>

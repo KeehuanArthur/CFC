@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
  * Created by arthurlee on 7/29/15.
  *
  * this is a singleton because you don't want 2 sermons to be playing at the same time
+ *
+ * if you want the graphical stuff, go to MediaActivity
  */
 public class SermonPlayer extends Object {
 

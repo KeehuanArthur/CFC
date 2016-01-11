@@ -1,10 +1,12 @@
 package com.example.arthurlee.cfc;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -60,7 +62,31 @@ public class SpecificSermonListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        
+        Sermon s = mSermonArrayList.get(position);
+
+        if( s.getMp3url().isEmpty() )
+        {
+            Toast.makeText(getActivity(), "No mp3 file found",
+                    Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Intent i = new Intent(getActivity(), MediaActivity.class);
+            i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
+            i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
+            i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
+            i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+            i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, s.getScripture());
+
+            //Set Global Vars
+            Constants.nowPlayingTitle = s.getTitle();
+            Constants.nowPlayingPastor = s.getPastor();
+            Constants.nowPlayingPassage = s.getScripture();
+            Constants.nowPlayingDate = s.getSDate();
+            Constants.nowPlayingUrl = s.getMp3url();
+
+            startActivity(i);
+        }
     }
 
 

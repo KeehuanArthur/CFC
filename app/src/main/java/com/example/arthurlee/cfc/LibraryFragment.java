@@ -30,15 +30,15 @@ public class LibraryFragment extends ListFragment
         mSermonArrayList = new ArrayList<>();
         mLibraryAdapter = new LibraryAdapter(mSermonArrayList);
 
-        //put in 4 blank sermons. These will not be displayed. The first 4 itemn in the
-        //Library adapter are overwritten with category names
+        /**
+         * put in 4 blank sermons into the LibraryAdapter. the first 4 items in the LibraryAdapter
+         * are over written and the space is used for category names
+         */
         for( int i = 0; i < 4; i++)
         {
             mLibraryAdapter.add(new Sermon());
         }
         setListAdapter(mLibraryAdapter);
-
-
     }
 
 
@@ -49,12 +49,10 @@ public class LibraryFragment extends ListFragment
         super.onCreate(savedInstanceState);
         getListView().setDivider(null);
 
-
         for(int i = 0; i < 25; i ++)
         {
             mLibraryAdapter.add(Constants.fullSermonList.get(i));
         }
-
     }
 
 
@@ -179,6 +177,9 @@ public class LibraryFragment extends ListFragment
             return convertView;
         }
 
+        /**
+         * this function tells android that there are 2 kinds of items displayed, sermons and categories
+         */
         @Override
         public int getViewTypeCount()
         {
