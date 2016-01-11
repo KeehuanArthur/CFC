@@ -36,7 +36,8 @@ public class MainPager extends AppCompatActivity
 {
     public static MobileAnalyticsManager analytics;
 
-    //ViewPager viewPager;
+    // fragmentManagers are used to switch between fragments in a single activity
+    FragmentManager fragmentManager;
 
 
 
@@ -58,11 +59,11 @@ public class MainPager extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
 
-        //Alex's mobile analytics account number: 8415647aa5814de8b7c14b02607164b7
-        //Alex's general cognito identity pool id: us-east-1:473ecee9-e260-47de-a713-4593e7f8ddc4
-
-
-        //My mobile analytics account number: 9d2215ddf13640a3a131bf5a821c57f0
+        /**
+         * Alex's mobile analytics account number: 8415647aa5814de8b7c14b02607164b7
+         * Alex's general cognito identity pool id: us-east-1:473ecee9-e260-47de-a713-4593e7f8ddc4
+         * My mobile analytics account number: 9d2215ddf13640a3a131bf5a821c57f0
+         */
 
 
         //Set up Amazon Mobile Analytics
@@ -76,7 +77,7 @@ public class MainPager extends AppCompatActivity
             Log.e(this.getClass().getName(), "Failed to initialize Amazon Mobile Analytics", ex);
         }
 
-
+        Log.d("Main Pager", "Main Pager being initialized------------");
 
         //Download Sermons and Announcements
         //SermonDownloader sermonDownloader = new SermonDownloader();
@@ -85,45 +86,19 @@ public class MainPager extends AppCompatActivity
         LocalJSONManager sermonManager = new LocalJSONManager(this);
         sermonManager.parseLocalJSON();
 
+
         SermonDownloader sermonDownloader = new SermonDownloader();
-        sermonDownloader.checkForNewSermons();
+        sermonDownloader.checkForNewSermons(this);
 
 
         AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
-        announcementDownloader.getAnnouncements();
+        announcementDownloader.getAnnouncements(this);
 
 
 
         //Set up view layouts
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-        /*
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new PagerFragment(getSupportFragmentManager(),
-                MainPager.this, this));
-
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-        //tabLayout.setTabTextColors(getResources().getColor(R.color.white));
-        tabLayout.setTabTextColors(Color.parseColor("#FFFFFF"), Color.parseColor("#FFFFFF"));
-
-        tabLayout.setElevation(10);
-
-
-        tabLayout.setBackgroundColor(Color.parseColor("#FFEBCD"));
-        tabLayout.setFadingEdgeLength(8);
-
-
-        this.getSupportActionBar().setElevation(0);
-        */
-
-
 
 
         //set up Navigation Items (side menu)
@@ -169,14 +144,36 @@ public class MainPager extends AppCompatActivity
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+        Constants.doneUpdatingAnnouncements = false;
 
     }
+
+    /**
+     * updateHomeView()
+     * is used to update the home view after sermons and announcements are done
+     * downloading and is called in AnnouncementDownloader and SermonDownloader
+     *
+     * to remove the spinny wheel to indicate the Announcements loading, I put constant that indicates
+     * if finished loading or not and is checked in onCreateView() in HomeFragment
+     */
+    public void updateHomeView()
+    {
+        fragmentManager = getFragmentManager();
+        Fragment homeFragment;
+        homeFragment = new HomeFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.mainContent, homeFragment)
+                .addToBackStack("main")
+                .commit();
+    }
+
 
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+
     }
 
     @Override
@@ -201,14 +198,18 @@ public class MainPager extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        /**
+         * Handle action bar item clicks here. The action bar will
+         * automatically handle clicks on the Home/Up button, so long
+         * as you specify a parent activity in AndroidManifest.xml.
+         */
         int id = item.getItemId();
 
-        // Pass the event to ActionBarDrawerToggle
-        // If it returns true, then it has handled
-        // the nav drawer indicator touch event
+        /**
+         * Pass the event to ActionBarDrawerToggle
+         * If it returns true, then it has handled
+         * the nav drawer indicator touch event
+         */
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -217,22 +218,33 @@ public class MainPager extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_now_playing)
         {
-
-            if(!SermonPlayer.get(MainPager.this.getBaseContext(), true).isPlaying())
+            /**
+             * Note: outer if statement necessary? b/c SermonPlayer is singleton so it will always
+             *       exist
+             */
+            if( SermonPlayer.get(MainPager.this.getApplicationContext(), true) != null)
             {
-                Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
+                if(!SermonPlayer.get(MainPager.this.getApplicationContext(), true).isPlaying())
+                {
+                    Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
+                }
+
+                else
+                {
+                    Intent i = new Intent(this, MediaActivity.class);
+                    i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, Constants.nowPlayingPastor);
+                    i.putExtra(MediaActivity.EXTRA_MP3URL, Constants.nowPlayingUrl);
+                    i.putExtra(MediaActivity.EXTRA_SERMON_DATE, Constants.nowPlayingDate);
+                    i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, Constants.nowPlayingTitle);
+
+                    startActivity(i);
+
+                }
             }
 
             else
             {
-                Intent i = new Intent(this, MediaActivity.class);
-                i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, Constants.nowPlayingPastor);
-                i.putExtra(MediaActivity.EXTRA_MP3URL, Constants.nowPlayingUrl);
-                i.putExtra(MediaActivity.EXTRA_SERMON_DATE, Constants.nowPlayingDate);
-                i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, Constants.nowPlayingTitle);
-
-                startActivity(i);
-
+                Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
             }
 
             return true;
@@ -245,13 +257,11 @@ public class MainPager extends AppCompatActivity
 
     private void selectItemFromDrawer(int position) {
 
-
-
         Fragment aboutFragment;
         Fragment libraryFragment;
         Fragment homeFragment;
 
-        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager = getFragmentManager();
 
 
         switch (position)
@@ -279,7 +289,7 @@ public class MainPager extends AppCompatActivity
                 break;
 
             case 2:
-                aboutFragment = new AboutFragment();
+                aboutFragment = new CFCabout();
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, aboutFragment)
                         .addToBackStack("main")
@@ -297,6 +307,11 @@ public class MainPager extends AppCompatActivity
         mDrawerLayout.closeDrawer(mDrawerPane);
     }
 
+
+    /**
+     * NOTE:: this class may not be necessary anymore. using the CFCabout Fragment which is it's own
+     *        file
+     */
 
     public static class AboutFragment extends Fragment {
 

@@ -27,12 +27,18 @@ public class SermonDownloader
     private String smallDate;
     XmlPullParserFactory xmlFactoryObject;
 
+    private MainPager mMainPager;
+
     public void getSermons()
     {
         new getSermonsXML().execute();
     }
 
-    public void checkForNewSermons() { new checkForUpdates().execute(); };
+    public void checkForNewSermons(MainPager mainPager)
+    {
+        new checkForUpdates().execute();
+        mMainPager = mainPager;
+    };
 
 
 
@@ -76,6 +82,12 @@ public class SermonDownloader
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            mMainPager.updateHomeView();
         }
 
         private void updateLocalSermonList(XmlPullParser parser)

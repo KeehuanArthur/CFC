@@ -352,7 +352,10 @@ public class SermonPlayer extends Object {
 
     public boolean isPlaying()
     {
-        return mMediaPlayer.isPlaying();
+        if( mMediaPlayer != null )
+            return mMediaPlayer.isPlaying();
+        else
+            return false;
     }
 
     //position is in milliseconds

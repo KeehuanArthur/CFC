@@ -1,8 +1,10 @@
 package com.example.arthurlee.cfc;
 
 
+import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +41,16 @@ public class CFCabout extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.about_fragment, container, false);
-        //TextView textView = (TextView) view;
-        //textView.setText("Fragment #" + mPage);
 
-
+        mWebsiteButton = (Button)view.findViewById( R.id.about_website_button );
+        mWebsiteButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.cfchome.org"));
+                startActivity(browserIntent);
+            }
+        });
 
         return view;
     }

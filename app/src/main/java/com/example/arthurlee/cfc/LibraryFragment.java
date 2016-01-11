@@ -123,22 +123,7 @@ public class LibraryFragment extends ListFragment
         Constants.nowPlayingDate = s.getSDate();
         Constants.nowPlayingUrl = s.getMp3url();
 
-
-        /*
-        //start notification controller here
-        Intent intent = new Intent( getActivity().getApplicationContext(), DropdownControls.class );
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, s.getTitle());
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, s.getPastor());
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, s.getSDate());
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, s.getScripture());
-
-
-        intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
-        getActivity().getApplicationContext().startService(intent);
-        */
-
         startActivity(i);
-
     }
 
 

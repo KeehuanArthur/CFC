@@ -2,7 +2,9 @@ package com.example.arthurlee.cfc;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +34,7 @@ public class HomeFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-
+        Log.d("home fragment", "home fragment has been created --------");
     }
 
     @Override
@@ -44,7 +46,14 @@ public class HomeFragment extends Fragment
         mRecentSermonLayout = (LinearLayout)v.findViewById(R.id.new_sermon_card);
         mRecentSermonLayout.addView(getSermonCard(0, inflater, parent));
 
-
+        /**
+         * when announcements are done loading, MainPager.updateHomeView() will be called which will
+         * reload the HomeFragment. check if announcements are done loading here
+         */
+        if(Constants.doneUpdatingAnnouncements)
+        {
+            v.findViewById(R.id.announcementsLoadingCircle).setVisibility(View.GONE);
+        }
 
         //set up announcements
         mAnnouncementsLayout = (LinearLayout)v.findViewById(R.id.announcement_cards);
@@ -53,6 +62,7 @@ public class HomeFragment extends Fragment
         {
             mAnnouncementsLayout.addView(getAnnouncementCard(i, inflater, parent));
         }
+
 
         return v;
     }
@@ -86,6 +96,32 @@ public class HomeFragment extends Fragment
         RelativeLayout.LayoutParams recentSermonCardParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT);
         sermonCard.setLayoutParams(recentSermonCardParams);
+
+        sermonCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
+
+                //New Activity Stuff
+                Sermon s = Constants.fullSermonList.get(0);
+                Intent i = new Intent(getActivity(), MediaActivity.class);
+                i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
+                i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
+                i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
+                i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+                i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, s.getScripture());
+
+                //Set Global Vars
+                Constants.nowPlayingTitle = s.getTitle();
+                Constants.nowPlayingPastor = s.getPastor();
+                Constants.nowPlayingPassage = s.getScripture();
+                Constants.nowPlayingDate = s.getSDate();
+                Constants.nowPlayingUrl = s.getMp3url();
+
+                startActivity(i);
+            }
+        });
 
         return sermonCard;
     }

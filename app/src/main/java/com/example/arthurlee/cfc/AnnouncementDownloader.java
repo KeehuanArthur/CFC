@@ -22,11 +22,13 @@ public class AnnouncementDownloader
     private static final String TAG_TITLE = "title";
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_IMAGE_URL = "filename";
+    private MainPager mMainPager;
 
-
-    public void getAnnouncements()
+    public void getAnnouncements(MainPager mainPager)
     {
         new  getAnnouncementsJSON().execute();
+        //mainPager.updateHomeView();
+        mMainPager = mainPager;
     }
 
 
@@ -89,6 +91,8 @@ public class AnnouncementDownloader
                 }
             }
 
+
+
             else
             {
                 Log.d("AnnouncementsDownloader", "connection error");
@@ -96,6 +100,13 @@ public class AnnouncementDownloader
 
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void result)
+        {
+            Constants.doneUpdatingAnnouncements = true;
+            mMainPager.updateHomeView();
         }
 
     }
