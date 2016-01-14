@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -24,6 +26,8 @@ public class MediaActivity extends FragmentActivity {
 
     private ImageButton mPlayButton;
     private TextView mTitle;
+    private TextView mSpeaker;
+    private TextView mPassage;
     private TextView mCurrentTime;
     private TextView mTotalTime;
     //private SeekBar mSeekBar;
@@ -43,7 +47,7 @@ public class MediaActivity extends FragmentActivity {
 
 
     private String mMP3URL;
-    private String mPastorName;
+    private String mSpeakerName;
     private String mSermonDate;
     private String mSermonTitle;
     private String mSermonScripture;
@@ -58,10 +62,17 @@ public class MediaActivity extends FragmentActivity {
 
         mMP3URL = getIntent().getStringExtra(EXTRA_MP3URL);
 
-        mPastorName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
+        mSpeakerName = getIntent().getStringExtra(EXTRA_PASTOR_NAME);
         mPastorPhoto = (ImageView)findViewById(R.id.pastorPhoto);
         mSermonTitle = getIntent().getStringExtra(EXTRA_SERMON_TITLE);
         mSermonScripture = getIntent().getStringExtra(EXTRA_SERMON_SCRIPTURE);
+
+        //Set Global Vars
+        Constants.nowPlayingTitle = mSermonTitle;
+        Constants.nowPlayingPastor = mSpeakerName;
+        Constants.nowPlayingPassage = mSermonScripture;
+        //Constants.nowPlayingDate = s.getSDate();
+        Constants.nowPlayingUrl = mMP3URL;
 
 
         AnalyticsEvent testEvent = MainPager.analytics.getEventClient().createEvent("test")
@@ -76,13 +87,19 @@ public class MediaActivity extends FragmentActivity {
         }
         */
 
+        // set up text views
         mTitle = (TextView)findViewById(R.id.media_title);
+        mSpeaker = (TextView)findViewById(R.id.sermon_player_speaker);
+        mPassage = (TextView)findViewById(R.id.sermon_player_passage);
         mTitle.setText(mSermonTitle);
+        mSpeaker.setText(mSpeakerName);
+        mPassage.setText(mSermonScripture);
+
 
 
 
         Drawable new_image;
-        switch (mPastorName)
+        switch (mSpeakerName)
         {
             case "Rev. Min Chung":
                 new_image = ContextCompat.getDrawable(this, R.drawable.pmin);
@@ -117,6 +134,10 @@ public class MediaActivity extends FragmentActivity {
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
 
+            default:
+                new_image = ContextCompat.getDrawable(this, R.drawable.guest_speaker);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
         }
 
 
@@ -183,7 +204,7 @@ public class MediaActivity extends FragmentActivity {
         final Context baseContext = getApplicationContext();
         Intent intent = new Intent( baseContext, DropdownControls.class );
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, mSermonTitle);
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mPastorName);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mSpeakerName);
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, mSermonDate);
         intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, mSermonScripture);
 
@@ -193,10 +214,36 @@ public class MediaActivity extends FragmentActivity {
 
 
 
-        //start the sermon when new activity is created
-        //the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
+        /**
+         * Start the sermon player when the new activity is created
+         * the sermon player class also controls the UI elements: seekbar, currenttime, totaltime
+         *
+         * There is also a loading circle in the place of the play button initially but once the sermon
+         * is buffered enough, it is replaced with the play button
+         */
         SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
 
+        if( !Constants.sermon_buffering )
+        {
+            enable_play_pause_button();
+        }
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        Log.d("MediaActivity", "onPause was called ---------");
+        Constants.viewable = false;
+    }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        Log.d("MediaActivity", "onResume was called ----------");
+        Constants.viewable = true;
     }
 
     @Override
@@ -205,6 +252,14 @@ public class MediaActivity extends FragmentActivity {
         overridePendingTransition(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
     }
 
-
+    /**
+     *
+     */
+    public void enable_play_pause_button()
+    {
+        mPlayButton.setVisibility(View.VISIBLE);
+        RelativeLayout loading_circle = (RelativeLayout)findViewById(R.id.sermon_loading_circle);
+        loading_circle.setVisibility(View.GONE);
+    }
 
 }

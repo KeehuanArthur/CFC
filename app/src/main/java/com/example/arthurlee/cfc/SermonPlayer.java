@@ -76,9 +76,16 @@ public class SermonPlayer extends Object {
     }
 
 
-    //this is called only when you open a new sermon. This is not to be used to restart sermon
-    //to play/pause use pauseplay method
-    //this is more like a init/setup function
+    /**
+     * play()
+     *
+     * this is called only when you open a new sermon, not when you want to play or pause a sermon.
+     * there is a seporate playpause method
+     * this is more like an initialization function
+     *
+     * This function is called when a Sermon activity starts but also checks if user clicked on already
+     * playing sermon
+     */
     public void play(String url, final SeekBar seekBar, TextView currentTime, final TextView totalTime,
                      ImageButton playpause)
         {
@@ -87,8 +94,10 @@ public class SermonPlayer extends Object {
             sSermonPlayer.mTotalTime = totalTime;
             sSermonPlayer.mPlayPauseButton = playpause;
 
-            //check if you are clicking the same sermon. If you clicked the sermon that is playing
-            //already, don't restart the sermon
+            /**
+             * this checks if user is clicking the same sermon. If user is, you dont need to go though the
+             * initialization process again
+             */
             if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart) {
 
                 sSermonPlayer.mp3Url = url;
@@ -99,7 +108,7 @@ public class SermonPlayer extends Object {
                 sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 sSermonPlayer.mForceRestart = false;
 
-
+                Constants.sermon_buffering = true;
 
                 //to switch between the JSON and XML version, change setDataSource Parameter
                 mp3Url = url;
@@ -148,7 +157,6 @@ public class SermonPlayer extends Object {
 
                         totalTime.setText(minStr + ":" + secStr);
 
-
                         /*
                         mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                             @Override
@@ -167,6 +175,9 @@ public class SermonPlayer extends Object {
                             }
                         });
                         */
+                        // enable the play button
+                        ((MediaActivity)sAppContext).enable_play_pause_button();
+                        Constants.sermon_buffering = false;
 
                         updateProgress();
                     }

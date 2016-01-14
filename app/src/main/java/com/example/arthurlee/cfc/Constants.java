@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 /**
  * Created by arthurlee on 8/15/15.
- * These are global variables. Don't hate
+ *
+ * Global Varaibles
  */
 public class Constants
 {
+    // Sermon Player vars
     public static String nowPlayingTitle;
     public static String nowPlayingPastor;
     public static String nowPlayingPassage;
@@ -19,7 +21,7 @@ public class Constants
     public static String searchFor;
     public static boolean doneUpdatingAnnouncements;
 
-    //Array Lists
+    // Array Lists
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();
     public static ArrayList<Announcement> announcementsList = new ArrayList<>();
     public static ArrayList<String>eventList = new ArrayList<>();
@@ -30,8 +32,14 @@ public class Constants
     public static int EVENT = 2;
     public static int SERIES = 3;
 
-    //URLS
+    // URLS
     public static String sermonsURL = "http://cfchome.org/sermons-json/";
     public static String announcementsURL = "http://s3.amazonaws.com/awctestbucket1/announcements.json";
     public static String announcementImagesURL = "http://s3.amazonaws.com/awctestbucket1/";
+
+
+    // Buffering and Synchronization
+    public static boolean viewable;                 // if app is viewable or in background
+    public static boolean pending_homeview_update;  // if there was update while app was in background
+    public static boolean sermon_buffering;         // if sermon is still buffering
 }

@@ -13,8 +13,17 @@
     <string name="listen_button">Listen</string>
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer closed</string>
+
     <string name="website_button">Website</string>
     <string name="facebook_button">Facebook</string>
+
+    <string name="notification_title">Title</string>
+    <string name="notification_speaker">Speaker</string>
+    <string name="notification_passage">Passage</string>
+    <string name="notification_icon">Notification Icon</string>
+    <string name="notification_play_pause_button">Notification play pause</string>
+    <string name="notification_close_button">Notification close</string>
+
     <string name="latest_sermons">Latest Sermons</string>
     <string name="newest_sermon">Newest Sermon</string>
     <string name="announcements">Announcements</string>

@@ -1,99 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
               android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:weightSum="4"
-                android:id="@+id/notification_controller">
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:src="@drawable/cfclogo_se2"
-            />
-    </LinearLayout>
+              android:id="@+id/notification_controller">
 
+    <ImageView
+        android:contentDescription="@string/notification_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/cfclogo_se100"
+        />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3">
+        android:id="@+id/buttons_row"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
 
-        <LinearLayout
-            android:id="@+id/buttons_row"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/notification_close"
+                android:background="@drawable/close_button_black"
+                android:layout_alignParentRight="true"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:id="@+id/notification_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                android:textColor="#000000"
+                android:textColor="#333333"
                 android:textSize="16sp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
+                android:layout_toLeftOf="@id/notification_close"
+                android:layout_alignParentLeft="true"
+                android:singleLine="true"
                 />
 
             <TextView
                 android:id="@+id/notification_speaker"
+                android:layout_below="@id/notification_title"
                 android:text="speaker"
-                android:textColor="#000000"
+                android:textColor="#737373"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:singleLine="true"
                 />
 
             <TextView
                 android:id="@+id/notification_passage"
+                android:layout_below="@id/notification_speaker"
                 android:text="passage"
-                android:textColor="#000000"
+                android:textColor="#737373"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginBottom="10dp"
-                />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="200dp"
-            >
-
-            <ImageButton
-                android:id="@+id/notification_close"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/close_button_black"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_margin="15dp"
-                android:layout_marginRight="5dp"
+                android:singleLine="true"
                 />
 
             <ImageButton
                 android:id="@+id/notification_playpause"
-                android:layout_toLeftOf="@id/notification_close"
-                android:background="@drawable/notification_template_icon_bg"
-                android:layout_width="25dp"
-                android:layout_weight="1"
-                android:layout_height="25dp"
+                android:background="@drawable/alpha_block"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
                 android:scaleType="fitCenter"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginTop="30dp"
+                android:padding="2dp"
+                android:layout_alignParentBottom="true"
                 />
-
         </RelativeLayout>
-    </LinearLayout>
 
+
+
+
+    </LinearLayout>
 
 
 

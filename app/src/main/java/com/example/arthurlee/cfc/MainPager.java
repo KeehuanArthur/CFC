@@ -28,8 +28,13 @@ import com.amazonaws.mobileconnectors.amazonmobileanalytics.MobileAnalyticsManag
 import java.util.ArrayList;
 
 
-
-//note: this is the main activity. Its just called MainPager cus the app used to use pagers
+/**
+ * This is the starting Activity for the Application. It's called MainPager because the app used to
+ * use pagers but i was too lazy to rename the file.
+ *
+ * To detect if the application is in view, this class and the MediaActivity class both set a
+ * global variable at onPause() and onResume().
+ */
 
 //public class MainPager extends ActionBarActivity
 public class MainPager extends AppCompatActivity
@@ -38,8 +43,6 @@ public class MainPager extends AppCompatActivity
 
     // fragmentManagers are used to switch between fragments in a single activity
     FragmentManager fragmentManager;
-
-
 
     //slide out bar stuff
     //-------------------------------------------------------------------
@@ -79,6 +82,9 @@ public class MainPager extends AppCompatActivity
 
         Log.d("Main Pager", "Main Pager being initialized------------");
 
+        // set global var to say app is viewable
+        Constants.viewable = true;
+
         //Download Sermons and Announcements
         //SermonDownloader sermonDownloader = new SermonDownloader();
         //sermonDownloader.getSermons();
@@ -105,6 +111,7 @@ public class MainPager extends AppCompatActivity
         mNavItems.add(new NavItem("Home", "", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("Library", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.abc_ic_commit_search_api_mtrl_alpha));
+        //mNavItems.add(new NavItem("Test", "Child View Pager test", R.drawable.alpha_block));
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 
@@ -155,16 +162,26 @@ public class MainPager extends AppCompatActivity
      *
      * to remove the spinny wheel to indicate the Announcements loading, I put constant that indicates
      * if finished loading or not and is checked in onCreateView() in HomeFragment
+     *
+     * if this function is called while the app is in the background, it will set up a pending_homeview_update
+     * flag and will automatically update the fragment the next time the app comes into view
      */
     public void updateHomeView()
     {
-        fragmentManager = getFragmentManager();
-        Fragment homeFragment;
-        homeFragment = new HomeFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.mainContent, homeFragment)
-                .addToBackStack("main")
-                .commit();
+        if( Constants.viewable )
+        {
+            fragmentManager = getFragmentManager();
+            Fragment homeFragment;
+            homeFragment = new HomeFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.mainContent, homeFragment)
+                    .addToBackStack("main")
+                    .commit();
+        }
+        else
+        {
+            Constants.pending_homeview_update = true;
+        }
     }
 
 
@@ -194,6 +211,33 @@ public class MainPager extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        Log.d("MainPager", "onPause was called ---------");
+        Constants.viewable = false;
+    }
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        Log.d("MainPager", "onResume was called ---------");
+        Constants.viewable = true;
+
+        if( Constants.pending_homeview_update )
+        {
+            fragmentManager = getFragmentManager();
+            Fragment homeFragment;
+            homeFragment = new HomeFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.mainContent, homeFragment)
+                    .addToBackStack("main")
+                    .commit();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -296,6 +340,16 @@ public class MainPager extends AppCompatActivity
 
                         .commit();
                 break;
+
+            /*
+            case 3:
+                temp_nested_viewfragment test_fragment = new temp_nested_viewfragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.mainContent, test_fragment)
+                        .addToBackStack("main");
+                        .commit();
+                break;
+                */
         }
 
 

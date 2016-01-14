@@ -114,13 +114,6 @@ public class LibraryFragment extends ListFragment
         i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
         i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, s.getScripture());
 
-        //Set Global Vars
-        Constants.nowPlayingTitle = s.getTitle();
-        Constants.nowPlayingPastor = s.getPastor();
-        Constants.nowPlayingPassage = s.getScripture();
-        Constants.nowPlayingDate = s.getSDate();
-        Constants.nowPlayingUrl = s.getMp3url();
-
         startActivity(i);
     }
 

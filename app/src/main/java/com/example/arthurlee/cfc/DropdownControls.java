@@ -6,9 +6,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -104,10 +105,13 @@ public class DropdownControls extends Service
 
             else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLICKSELF))
             {
-                Log.d("clicked self", "clicked self");
-                Intent restartIntent = new Intent(getBaseContext(), MainPager.class);
-                restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(restartIntent);
+                // only restart the activity if the app is not viewable
+                if( !Constants.viewable )
+                {
+                    Intent restartIntent = new Intent(getBaseContext(), MainPager.class);
+                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(restartIntent);
+                }
             }
 
         }
@@ -117,18 +121,29 @@ public class DropdownControls extends Service
 
     private void showNotification(boolean isPlaying)
     {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.cfclogo_se2);
+
+
         mSermonController = new NotificationCompat.Builder( getApplicationContext() )
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.play_button_white)
-                .setContentTitle(getString(R.string.app_name))
+                .setLargeIcon(bm)
+                .setContentTitle(Constants.nowPlayingTitle)
+                .setWhen(0)
                 .build();
 
+
+        //.setLargeIcon(bm)
+        //.setStyle(new NotificationCompat.BigPictureStyle().bigLargeIcon(bm))
+
+
         mSermonController.bigContentView = getExpandedView( isPlaying );
-        mSermonController.priority = Notification.PRIORITY_HIGH;
+        //mSermonController.priority = Notification.PRIORITY_HIGH;
         mSermonController.flags = Notification.FLAG_ONGOING_EVENT;
 
 
         displayNotification();
+
     }
 
 
@@ -162,7 +177,7 @@ public class DropdownControls extends Service
         mCustomRemoteView.setTextViewText(R.id.notification_speaker, mPastor);
         mCustomRemoteView.setTextViewText(R.id.notification_passage, mPassage);
 
-        mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.play_button);
+        mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button);
 
         Intent intent = new Intent( getApplicationContext(), DropdownControls.class );
 
@@ -170,9 +185,11 @@ public class DropdownControls extends Service
         PendingIntent pendingIntent = PendingIntent.getService( getApplicationContext(), 1, intent, 0 );
         mCustomRemoteView.setOnClickPendingIntent( R.id.notification_playpause, pendingIntent );
 
+
         intent.setAction(ACTION_NOTIFICATION_CLOSE);
         pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
         mCustomRemoteView.setOnClickPendingIntent(R.id.notification_close, pendingIntent);
+
 
         intent.setAction(ACTION_NOTIFICATION_CLICKSELF);
         pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
