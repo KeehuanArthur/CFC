@@ -1,14 +1,16 @@
 package com.example.arthurlee.cfc;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.app.FragmentManager;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,9 +24,10 @@ public class HomeFragment extends Fragment
 {
     private ArrayList<Sermon> mLatestSermonList;
     private SermonAdapter mLatestSermonAdapter;
+    private ViewPager mAnnouncementPager;
+    private PagerAdapter mAnnouncementPagerAdapter;
 
-
-    private LinearLayout mAnnouncementsLayout;
+    //private LinearLayout mAnnouncementsLayout;
     private LinearLayout mRecentSermonLayout;
 
     FragmentManager fragmentManager;
@@ -55,16 +58,21 @@ public class HomeFragment extends Fragment
             v.findViewById(R.id.announcementsLoadingCircle).setVisibility(View.GONE);
         }
 
-        //set up announcements
-        mAnnouncementsLayout = (LinearLayout)v.findViewById(R.id.announcement_cards);
 
-        for(int i = 0; i < Constants.announcementsList.size(); i++)
-        {
-            mAnnouncementsLayout.addView(getAnnouncementCard(i, inflater, parent));
-        }
-
+        mAnnouncementPager = (ViewPager)v.findViewById(R.id.announcements_viewpager);
+        mAnnouncementPagerAdapter = new AnnouncementPagerAdapter(getChildFragmentManager());
+        mAnnouncementPager.setAdapter(mAnnouncementPagerAdapter);
 
         return v;
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        Constants.curAnnouncement = 0;
     }
 
 
@@ -99,8 +107,7 @@ public class HomeFragment extends Fragment
 
         sermonCard.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
 
                 //New Activity Stuff
@@ -126,18 +133,43 @@ public class HomeFragment extends Fragment
         return sermonCard;
     }
 
-    private View getAnnouncementCard(int announcementNumber, LayoutInflater inflater, ViewGroup parent)
+
+
+    private class AnnouncementPagerAdapter extends FragmentPagerAdapter
     {
-        View announcementCard = inflater.inflate(R.layout.list_item_announcement, parent, false);
+        public AnnouncementPagerAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
 
-        TextView announcementTitle = (TextView)announcementCard.findViewById(R.id.list_item_announcement_Title);
-        ImageView announcementImage = (ImageView)announcementCard.findViewById(R.id.list_item_announcement_image);
+        /**
+         * getItem() is only called once per position and only goes up. it doesn't get called again
+         * when going from position 5 to 4 but does get called when going from 5 to 6
+         *
+         * ie it will only get called when the fragment that it wants doesn't exist and fragments
+         *    don't get destroyed after they go off the screen like in a scroll view
+         *
+         * because of this, you can keep a constant that keeps track of which sermon is next to be
+         * loaded and use that to determine which image to load up on single announcement page onCreateView()
+         *
+         * http://stackoverflow.com/questions/19339500/when-is-fragmentpageradapters-getitem-called
+         */
+        @Override
+        public Fragment getItem(int position)
+        {
+            /**
+             * the AnnouncementView knows which image to display by looking at the Constants.announcementNumb
+             * which will be incremented each time a new AnnouncementView is made
+             */
+            Log.d("HomeFragment", "getitem was called");
+            return new AnnouncementView();
+        }
 
-        Announcement a = Constants.announcementsList.get(announcementNumber);
+        @Override
+        public int getCount()
+        {
+            return Constants.numbAnnouncements;
 
-        announcementTitle.setText(a.getTitle());
-        announcementImage.setImageBitmap(a.getImage());
-
-        return announcementCard;
+        }
     }
 }

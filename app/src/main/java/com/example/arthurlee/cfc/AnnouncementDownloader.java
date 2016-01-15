@@ -79,10 +79,13 @@ public class AnnouncementDownloader
                             e.printStackTrace();
                         }
 
+                        if( bitmapImage != null )
+                            Log.d("bitmap parse", "success ");
+
                         announcement.setImage(bitmapImage);
 
                         Constants.announcementsList.add(Constants.announcementsList.size(), announcement);
-
+                        Constants.numbAnnouncements ++;
                     }
                 }
                 catch (JSONException e)

@@ -20,6 +20,7 @@ public class Constants
     public static String categoryName;
     public static String searchFor;
     public static boolean doneUpdatingAnnouncements;
+    public static int numbAnnouncements = 0;
 
     // Array Lists
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();
@@ -42,4 +43,5 @@ public class Constants
     public static boolean viewable;                 // if app is viewable or in background
     public static boolean pending_homeview_update;  // if there was update while app was in background
     public static boolean sermon_buffering;         // if sermon is still buffering
+    public static int curAnnouncement = 0;
 }

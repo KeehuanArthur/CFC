@@ -1,10 +1,10 @@
 package com.example.arthurlee.cfc;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -111,7 +111,6 @@ public class MainPager extends AppCompatActivity
         mNavItems.add(new NavItem("Home", "", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("Library", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
         mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.abc_ic_commit_search_api_mtrl_alpha));
-        //mNavItems.add(new NavItem("Test", "Child View Pager test", R.drawable.alpha_block));
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 
@@ -175,7 +174,6 @@ public class MainPager extends AppCompatActivity
             homeFragment = new HomeFragment();
             fragmentManager.beginTransaction()
                     .replace(R.id.mainContent, homeFragment)
-                    .addToBackStack("main")
                     .commit();
         }
         else
@@ -337,19 +335,8 @@ public class MainPager extends AppCompatActivity
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, aboutFragment)
                         .addToBackStack("main")
-
                         .commit();
                 break;
-
-            /*
-            case 3:
-                temp_nested_viewfragment test_fragment = new temp_nested_viewfragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.mainContent, test_fragment)
-                        .addToBackStack("main");
-                        .commit();
-                break;
-                */
         }
 
 
