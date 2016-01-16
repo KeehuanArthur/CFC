@@ -57,6 +57,7 @@ public class SermonDownloader
         protected Void doInBackground(Void... arg0)
         {
             try {
+                Constants.no_internet_connection = false;
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -79,6 +80,7 @@ public class SermonDownloader
                 stream.close();
                 Log.d("SermonDownloader","went through update");
             } catch (Exception e) {
+                Constants.no_internet_connection = true;
                 e.printStackTrace();
             }
             return null;
@@ -90,6 +92,17 @@ public class SermonDownloader
             mMainPager.updateHomeView();
         }
 
+        /**
+         * updateLocalSermonList() uses the parser to update the local arraylist that is already
+         * occupied by the sermons from the JSON sermons that were parsed before this function was
+         * called
+         *
+         * It looks at the current newest sermon in the list and while the sermon being checked
+         * isn't the same as that new one, keep adding sermons to the list from the XML
+         * this prevents an overlap from the sermons online and the sermons from the local file
+         *
+         * @param parser
+         */
         private void updateLocalSermonList(XmlPullParser parser)
         {
             int event;
@@ -242,7 +255,6 @@ public class SermonDownloader
                 parseXMLAndStoreIt(myparser);
                 stream.close();
             } catch (Exception e) {
-                //Log.d("RSSFetcher", e.toString());
 
                 //create no internet connection toast here
                 //this crashes right now. look up handlers (multi threading)
@@ -250,7 +262,6 @@ public class SermonDownloader
             }
             return null;
         }
-
 
         @Override
         protected void onPostExecute(Void result)

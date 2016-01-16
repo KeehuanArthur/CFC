@@ -44,4 +44,6 @@ public class Constants
     public static boolean pending_homeview_update;  // if there was update while app was in background
     public static boolean sermon_buffering;         // if sermon is still buffering
     public static int curAnnouncement = 0;
+    public static int announcementsTotal = 0;
+    public static boolean no_internet_connection;
 }

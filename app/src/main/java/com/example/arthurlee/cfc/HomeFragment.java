@@ -45,9 +45,12 @@ public class HomeFragment extends Fragment
     {
         View v = inflater.inflate(R.layout.home_fragment, parent, false);
 
-        //set up new sermon
-        mRecentSermonLayout = (LinearLayout)v.findViewById(R.id.new_sermon_card);
-        mRecentSermonLayout.addView(getSermonCard(0, inflater, parent));
+        // set up new sermon only if there are sermons in list
+        if( Constants.fullSermonList.size() != 0 )
+        {
+            mRecentSermonLayout = (LinearLayout)v.findViewById(R.id.new_sermon_card);
+            mRecentSermonLayout.addView(getSermonCard(0, inflater, parent));
+        }
 
         /**
          * when announcements are done loading, MainPager.updateHomeView() will be called which will
@@ -85,15 +88,8 @@ public class HomeFragment extends Fragment
         TextView sermonDate = (TextView)sermonCard.findViewById(R.id.sermon_list_item_dateTextView);
         TextView sermonPassage = (TextView)sermonCard.findViewById(R.id.sermon_list_item_passage);
 
-        /*   commented block was going to be used to check if there's a way to check when sermon parsing is done
-             by seeing if null is returned by arraylist. remember to take into consideration that there's also internal JSON file
-             containing sermons that are also parsed
-        ArrayList<Sermon> fullsermon
-        if(s == null )
-            Log.d("didn't receive sermon:", "null returned");
-        */
-        Sermon s = Constants.fullSermonList.get(sermonNumber);
 
+        Sermon s = Constants.fullSermonList.get(sermonNumber);
 
 
         sermonTitle.setText(s.getTitle());
@@ -161,14 +157,13 @@ public class HomeFragment extends Fragment
              * the AnnouncementView knows which image to display by looking at the Constants.announcementNumb
              * which will be incremented each time a new AnnouncementView is made
              */
-            Log.d("HomeFragment", "getitem was called");
             return new AnnouncementView();
         }
 
         @Override
         public int getCount()
         {
-            return Constants.numbAnnouncements;
+            return Constants.announcementsTotal;
 
         }
     }

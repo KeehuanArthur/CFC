@@ -1,10 +1,12 @@
 package com.example.arthurlee.cfc;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -89,17 +91,24 @@ public class MainPager extends AppCompatActivity
         //SermonDownloader sermonDownloader = new SermonDownloader();
         //sermonDownloader.getSermons();
 
-        LocalJSONManager sermonManager = new LocalJSONManager(this);
-        sermonManager.parseLocalJSON();
+        if( isNetworkAvailable() )
+        {
+            LocalJSONManager sermonManager = new LocalJSONManager(this);
+            sermonManager.parseLocalJSON();
 
 
-        SermonDownloader sermonDownloader = new SermonDownloader();
-        sermonDownloader.checkForNewSermons(this);
+            SermonDownloader sermonDownloader = new SermonDownloader();
+            sermonDownloader.checkForNewSermons(this);
 
 
-        AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
-        announcementDownloader.getAnnouncements(this);
-
+            AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
+            announcementDownloader.getAnnouncements(this);
+        }
+        else
+        {
+            Toast.makeText(MainPager.this, "no connection", Toast.LENGTH_LONG).show();
+            Constants.no_internet_connection = true;
+        }
 
 
         //Set up view layouts
@@ -180,6 +189,24 @@ public class MainPager extends AppCompatActivity
         {
             Constants.pending_homeview_update = true;
         }
+        if( Constants.no_internet_connection )
+        {
+            Toast.makeText(MainPager.this, "no connection", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    /**
+     * check if there is a internet connection before trying to update anything
+     *
+     * @return
+     * state of connection
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
 
