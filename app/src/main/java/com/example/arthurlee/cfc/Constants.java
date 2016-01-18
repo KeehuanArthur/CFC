@@ -27,6 +27,8 @@ public class Constants
     public static ArrayList<Sermon> fullSermonList = new ArrayList<Sermon>();
     public static ArrayList<Announcement> announcementsList = new ArrayList<>();
     public static ArrayList<String>eventList = new ArrayList<>();
+    public static ArrayList<String>pastoral_staff = new ArrayList<>();  // this is set up in mainpager
+    public static ArrayList<String>series_list = new ArrayList<>();
 
     // Sermon Category numbers
     public static int YEAR = 0;

@@ -66,11 +66,17 @@ public class LocalJSONManager
                 s.setMp3url(jSermon.getString("link"));
                 s.setEvent(jSermon.getString("event"));
                 s.setScripture(jSermon.getString("passage"));
+                s.setSeries(jSermon.getString("series"));
 
-                //update global event list
-                if(!Constants.eventList.contains(s.getEvent()))
+                // update global event list
+                if(!Constants.eventList.contains(s.getEvent()) && s.getEvent() != null && !s.getEvent().equals("") )
                 {
-                    Constants.eventList.add(Constants.eventList.size(), s.getEvent());
+                    Constants.eventList.add( s.getEvent() );
+                }
+                // update global series list
+                if( !Constants.series_list.contains(s.getSeries()) && s.getSeries() != null && !s.getSeries().equals("") )
+                {
+                    Constants.series_list.add( s.getSeries() );
                 }
 
                 try
@@ -89,10 +95,17 @@ public class LocalJSONManager
                 Constants.fullSermonList.add(Constants.fullSermonList.size(), s);
             }
 
+
+            // bottom 2 commands are removed b/c its better to alphabetize once so just do it
+            // in the sermon downloader
+            // alphabetize event list
+            //Collections.sort(Constants.eventList);
+
+            // alphabetize series list
+            //Collections.sort(Constants.series_list);
         }
         catch (JSONException e)
         {
-
             e.printStackTrace();
         }
 

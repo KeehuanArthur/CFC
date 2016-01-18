@@ -87,7 +87,13 @@ public class MainPager extends AppCompatActivity
         // set global var to say app is viewable
         Constants.viewable = true;
 
-
+        // initialize pastoral staff array
+        Constants.pastoral_staff.add("Rev. Min Chung");
+        Constants.pastoral_staff.add("Rev. KJ Kim");
+        Constants.pastoral_staff.add("Rev. David Kang");
+        Constants.pastoral_staff.add("Pastor Sean Lee");
+        Constants.pastoral_staff.add("Pastor Tony Thomas");
+        Constants.pastoral_staff.add("Pastor Jim Han");
 
         // Load up the sermons if there is internet connection
         if( isNetworkAvailable() )

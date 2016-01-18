@@ -118,10 +118,20 @@ public class SpecificSermonListFragment extends ListFragment
         for( int i = 0; i < Constants.fullSermonList.size(); i++ )
         {
             Sermon s = Constants.fullSermonList.get(i);
-            if( (s.getPastor()).equals(searchFor))
-            {
-                mSermonAdapter.add(s);
 
+            if( !searchFor.equals("Guest Speakers") )
+            {
+                if( (s.getPastor()).equals(searchFor) )
+                {
+                    mSermonAdapter.add(s);
+                }
+            }
+            else
+            {
+                if( !Constants.pastoral_staff.contains(s.getPastor()) )
+                {
+                    mSermonAdapter.add(s);
+                }
             }
         }
     }
@@ -134,8 +144,6 @@ public class SpecificSermonListFragment extends ListFragment
             if( s.getEvent() != null && (s.getEvent()).equals(searchFor))
             {
                 mSermonAdapter.add(s);
-
-                Log.d("Specific Sermon", "adding event sermon ");
             }
         }
     }
@@ -146,6 +154,10 @@ public class SpecificSermonListFragment extends ListFragment
         {
             Sermon s = Constants.fullSermonList.get(i);
 
+            if( s.getSeries() != null && (s.getSeries()).equals(searchFor) )
+            {
+                mSermonAdapter.add(s);
+            }
         }
     }
 

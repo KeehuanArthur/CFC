@@ -14,12 +14,18 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 /**
  * Created by arthurlee on 8/16/15.
  *
- * These functions will store the sermons array list in global variable in Constants.java
+ * This class is responsible for downloading the sermons and adding them to a global array list called
+ * fullSermonList. There are a few ways to download the sermons using this class but the best way seems
+ * to be using a JSON file.
+ *
+ * note for if you change download method:
+ *  only the JSON downloader updates the global series and events ArrayList
  */
 public class SermonDownloader
 {
@@ -444,6 +450,16 @@ public class SermonDownloader
                     if(s.getTitle().equals(latest_local_sermon))
                         break;
 
+                    // update global event list
+                    if(!Constants.eventList.contains(s.getEvent()) && s.getEvent() != null && !s.getEvent().equals("") )
+                    {
+                        Constants.eventList.add(s.getEvent());
+                    }
+                    // update global series list
+                    if( !Constants.series_list.contains(s.getSeries()) && s.getSeries() != null && !s.getSeries().equals("") )
+                    {
+                        Constants.series_list.add( s.getSeries() );
+                    }
 
                     reversed_sermon_list.add(s);
                 }
@@ -454,6 +470,12 @@ public class SermonDownloader
                 {
                     Constants.fullSermonList.add(0, reversed_sermon_list.get(i));
                 }
+
+                // alphabetize event list
+                Collections.sort(Constants.eventList);
+
+                // alphabetize series list
+                Collections.sort(Constants.series_list);
 
 
             }

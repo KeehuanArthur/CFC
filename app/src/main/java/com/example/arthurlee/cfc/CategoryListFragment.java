@@ -101,17 +101,17 @@ public class CategoryListFragment extends ListFragment
 
     private void populateSpeaker()
     {
-        mCategoryItemsAdapter.add("Rev. Min Chung");
-        mCategoryItemsAdapter.add("Rev. KJ Kim");
-        mCategoryItemsAdapter.add("Rev. David Kang");
-        mCategoryItemsAdapter.add("Pastor Sean Lee");
-        mCategoryItemsAdapter.add("Pastor Tony Thomas");
-        mCategoryItemsAdapter.add("Pastor Jim Han");
+        for( int i = 0; i < Constants.pastoral_staff.size(); i ++ )
+        {
+            mCategoryItemsAdapter.add(Constants.pastoral_staff.get(i) );
+        }
+
         mCategoryItemsAdapter.add("Guest Speakers");
     }
 
     private void populateSeries()
     {
+        /*
         String[] booksOfBible = { "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges",
                                     "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles",
                                     "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalms",
@@ -129,6 +129,13 @@ public class CategoryListFragment extends ListFragment
         {
             mCategoryItemsAdapter.add(booksOfBible[i]);
         }
+        */
+
+        for( int i = 0; i < Constants.series_list.size(); i++ )
+        {
+            mCategoryItemsAdapter.add( Constants.series_list.get(i) );
+        }
+
     }
 
     private void populateEvents()
