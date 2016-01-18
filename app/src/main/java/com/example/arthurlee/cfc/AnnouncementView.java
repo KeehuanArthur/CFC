@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.text.format.DateFormat;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Created by arthurlee on 1/14/16.
@@ -18,6 +22,7 @@ import android.widget.ImageView;
 public class AnnouncementView extends Fragment
 {
     ImageView announcement_image;
+    TextView announcement_title, announcement_date, announcement_time, announcement_location;
     int announcementNumb;
 
     @Override
@@ -35,6 +40,10 @@ public class AnnouncementView extends Fragment
                 R.layout.announcement_view, container, false);
 
         announcement_image = (ImageView)v.findViewById(R.id.announcement_image);
+        announcement_title = (TextView)v.findViewById(R.id.announcement_title);
+        announcement_date = (TextView)v.findViewById(R.id.announcement_date);
+        announcement_time = (TextView)v.findViewById(R.id.announcement_time);
+        announcement_location = (TextView)v.findViewById(R.id.announcement_location);
 
         /**
          * because the sermons my not be all loaded into the arraylist oncreateview(), there must be a
@@ -43,12 +52,22 @@ public class AnnouncementView extends Fragment
         //if(Constants.announcementsTotal != 0)
         if( Constants.announcementsList.size() != 0 )
         {
-            announcement_image.setImageBitmap(Constants.announcementsList
-                    .get(announcementNumb % Constants.announcementsTotal).getImage());
+            Announcement curAnnouncement = Constants.announcementsList.get(announcementNumb);
+            DateFormat dateFormat = new DateFormat();
+            dateFormat.format("MMM-DD-YYYY", curAnnouncement.getDate());
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd  yyyy");
+
+            announcement_image.setImageBitmap(curAnnouncement.getImage());
+            announcement_title.setText(curAnnouncement.getTitle());
+            announcement_date.setText(simpleDateFormat.format(curAnnouncement.getDate()));
+            announcement_time.setText(curAnnouncement.getTime());
+            announcement_location.setText(curAnnouncement.getLocation());
         }
 
         return v;
     }
+
 
 
 }

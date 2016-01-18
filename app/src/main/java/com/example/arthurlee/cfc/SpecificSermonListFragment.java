@@ -1,8 +1,8 @@
 package com.example.arthurlee.cfc;
 
+import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -50,10 +50,12 @@ public class SpecificSermonListFragment extends ListFragment
                 break;
 
             case("Event"):
+                Log.d("Specific sermon", "Event selected: " + Constants.searchFor);
                 searchByEvent(Constants.searchFor);
                 break;
 
             case("Series"):
+                Log.d("Specific sermon", "Series selected selected" + Constants.searchFor);
                 searchBySeries(Constants.searchFor);
                 break;
         }
@@ -106,7 +108,6 @@ public class SpecificSermonListFragment extends ListFragment
             if ( searchYear == sermonYear )
             {
                 mSermonAdapter.add(Constants.fullSermonList.get(i));
-                Log.d("Specific Sermon", "added sermon");
             }
         }
 
@@ -120,7 +121,6 @@ public class SpecificSermonListFragment extends ListFragment
             if( (s.getPastor()).equals(searchFor))
             {
                 mSermonAdapter.add(s);
-                Log.d("Specific Sermon", "added sermon");
 
             }
         }
@@ -131,10 +131,11 @@ public class SpecificSermonListFragment extends ListFragment
         for( int i = 0; i < Constants.fullSermonList.size(); i++ )
         {
             Sermon s = Constants.fullSermonList.get(i);
-            if( (s.getEvent()).equals(searchFor))
+            if( s.getEvent() != null && (s.getEvent()).equals(searchFor))
             {
                 mSermonAdapter.add(s);
-                Log.d("Specific Sermon", "added sermon");
+
+                Log.d("Specific Sermon", "adding event sermon ");
             }
         }
     }

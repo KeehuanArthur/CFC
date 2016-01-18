@@ -89,6 +89,8 @@ public class SermonPlayer extends Object {
     public void play(String url, final SeekBar seekBar, TextView currentTime, final TextView totalTime,
                      ImageButton playpause)
         {
+            Constants.sermonPlayerPaused = false;
+
             sSermonPlayer.mSeekBar = seekBar;
             sSermonPlayer.mCurrentTime = currentTime;
             sSermonPlayer.mTotalTime = totalTime;
@@ -98,7 +100,8 @@ public class SermonPlayer extends Object {
              * this checks if user is clicking the same sermon. If user is, you dont need to go though the
              * initialization process again
              */
-            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart) {
+            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart
+                    || Constants.sermon_force_restart) {
 
                 sSermonPlayer.mp3Url = url;
 
@@ -121,16 +124,12 @@ public class SermonPlayer extends Object {
                     //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
                     sSermonPlayer.mMediaPlayer.prepareAsync();
                 } catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (SecurityException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (IllegalStateException e) {
-                    // TODO Auto-generated catch block///
                     e.printStackTrace();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -201,19 +200,7 @@ public class SermonPlayer extends Object {
                     }
                 });
 
-                /*
-                // set up the notification center controls via android service
-                final Context baseContext = sAppContext;
-                notificationIntent = new Intent( baseContext, DropdownControls.class );
-                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, "Temp Title");
-                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, "Temp Pastor Name");
-                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, "Temp Date");
-                notificationIntent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, "Temp Passage");
-
-                notificationIntent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
-                sAppContext.getApplicationContext().startService(notificationIntent);
-                //MediaActivity.getApplicationContext().startService(intent);
-                */
+                ((MediaActivity)sAppContext).activate_notification_controller();
             }
 
             else
@@ -319,6 +306,7 @@ public class SermonPlayer extends Object {
                     @Override
                     public void run() {
                         mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
+                        Constants.sermonPlayerPaused = true;
                     }
                 });
 
@@ -328,6 +316,7 @@ public class SermonPlayer extends Object {
             {
                 sSermonPlayer.mMediaPlayer.start();
                 mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                Constants.sermonPlayerPaused = true;
             }
 
             else
@@ -339,6 +328,7 @@ public class SermonPlayer extends Object {
                     @Override
                     public void run() {
                         mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                        Constants.sermonPlayerPaused = false;
                     }
                 });
 
@@ -348,6 +338,7 @@ public class SermonPlayer extends Object {
         {
             Log.d("play function", "start ");
             play(mp3Url, mSeekBar, mCurrentTime, mTotalTime, mPlayPauseButton);
+            Constants.sermonPlayerPaused = false;
         }
     }
 

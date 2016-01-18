@@ -39,7 +39,8 @@ public class AnnouncementDownloader
     public void getAnnouncements(MainPager mainPager)
     {
         //new  getAnnouncementsJSON().execute();
-        new getAnnouncementsXML().execute();
+        //new getAnnouncementsXML().execute();
+        new getAnnouncementsJSON2().execute();
         mMainPager = mainPager;
     }
 
@@ -159,6 +160,101 @@ public class AnnouncementDownloader
         }
     }
 
+
+
+    public class getAnnouncementsJSON2 extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void ...arg0)
+        {
+            try
+            {
+                JSONparser jsonParser = new JSONparser();
+                JSONObject jsonObject = jsonParser.getJSONFromUrl(Constants.announcementsURL);
+                JSONArray jsonArray = jsonObject.getJSONArray("special-events");
+
+                // go through list of array and add to global announcements
+                for( int i = 0; i < jsonArray.length(); i++ )
+                {
+                    final Announcement a = new Announcement();
+                    JSONObject jAnnouncement = jsonArray.getJSONObject(i);
+                    JSONDateParser jsonDateParser = new JSONDateParser();
+
+                    a.setTitle(jAnnouncement.getString("event-title"));
+                    a.setDescription(jAnnouncement.getString("description"));
+                    a.setLocation(jAnnouncement.getString("location"));
+                    a.setDate( jsonDateParser.parse(jAnnouncement.getString("start-date")));
+                    a.setTime(jAnnouncement.getString("time"));
+
+
+                    String img_scr = jsonArray.getJSONObject(i).getString("large-image-url");
+
+                    a.setImage(getBitmapFromURL(img_scr));
+
+                    Constants.announcementsList.add(a);
+                    Log.d("announcement added", a.getTitle());
+                }
+
+                Constants.announcementsTotal = jsonArray.length();
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                Log.d("announcement down", "failed download -------------");
+
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            Constants.doneUpdatingAnnouncements = true;
+            mMainPager.updateHomeView();
+        }
+
+        public Bitmap getBitmapFromURL(String src) {
+            try {
+                URL url = new URL(src);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (IOException e) {
+                // Log exception
+                Log.d("AnnouncementDown", "failed download");
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
 
     public class getAnnouncementsJSON extends AsyncTask<Void, Void, Void>
     {

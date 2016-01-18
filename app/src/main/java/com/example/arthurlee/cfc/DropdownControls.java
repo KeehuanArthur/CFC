@@ -88,7 +88,6 @@ public class DropdownControls extends Service
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_PLAY_PAUSE))
             {
                 SermonPlayer.get(getApplicationContext(), true).playPause(false, false);
-                //showNotification(mIsPlaying);
                 updateNotification();
             }
             else if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
@@ -99,7 +98,12 @@ public class DropdownControls extends Service
 
             else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLOSE))
             {
+                /**
+                 * set sermon_force_restart here because if notification controller is closed while user
+                 * is at MediaActivity, you want sermon to restart when user presses play again
+                 */
                 SermonPlayer.get(getBaseContext(),true).stop();
+                Constants.sermon_force_restart = true;
                 mManager.cancelAll();
             }
 

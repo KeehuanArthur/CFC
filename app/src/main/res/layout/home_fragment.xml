@@ -15,8 +15,6 @@
         />
 
 
-
-
     <LinearLayout
         android:id="@+id/new_sermon_card"
         android:layout_width="match_parent"
@@ -26,13 +24,17 @@
         />
 
 
+    <ImageView
+        android:src="@drawable/olive_branch"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"/>
 
     <TextView
         android:text="@string/announcements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
         android:textSize="15dp"
         />
 

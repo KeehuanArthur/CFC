@@ -3,6 +3,8 @@ package com.example.arthurlee.cfc;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -21,8 +23,9 @@ import java.util.Date;
  */
 public class SermonDownloader
 {
+    String TAG = "SermonDownloader";
     private static String urlString = "http://cfchome.org/feed/sermons/";
-    private String jsonURL = "http://s3.amazonaws.com/awctestbucket1/sermonInfo_version3.json";
+    private String jsonURL = "http://cfchome.org/mobile/?get=sermons-json";
 
     private String smallDate;
     XmlPullParserFactory xmlFactoryObject;
@@ -36,8 +39,9 @@ public class SermonDownloader
 
     public void checkForNewSermons(MainPager mainPager)
     {
-        new checkForUpdates().execute();
         mMainPager = mainPager;
+        //new checkForUpdates().execute();
+        new getSermonsJSON().execute();
     };
 
 
@@ -137,6 +141,7 @@ public class SermonDownloader
                                 s.setTitle(text);
                                 sermonTitle = text;
                                 boolean sermonFinished = false;
+                                boolean event_found = false;
                                 event = parser.next();
 
                                 //look for other members of sermon
@@ -147,6 +152,11 @@ public class SermonDownloader
                                             if (name.equals("enclosure")) {
                                                 s.setMp3url(parser.getAttributeValue(null, "url"));
                                             }
+                                            if( name.equals("itunes:event") )
+                                            {
+                                                event_found = true;
+                                                Log.d("SermonDownloader", "event found ------");
+                                            }
                                             break;
 
                                         case XmlPullParser.TEXT:
@@ -154,6 +164,13 @@ public class SermonDownloader
                                             break;
 
                                         case XmlPullParser.END_TAG:
+                                            Log.d("SermonDownloader", "name " + name );
+                                            String series_name = null;
+                                            if( name != null && name.length() >= 12 )
+                                            {
+                                                series_name = name.substring(0, 12);
+                                                //Log.d("SermonDownloader", "subname set: " + series_name);
+                                            }
                                             if (name.equals("pubDate"))
                                             {
                                                 s.setDate(parseDate(text));
@@ -162,9 +179,11 @@ public class SermonDownloader
                                             {
                                                 s.setPastor(text);
                                             }
-                                            else if (name.equals("itunes:series"))
+                                            else if ( event_found )
                                             {
                                                 s.setEvent(text);
+                                                event_found = false;
+                                                Log.d("sermon downloader", "event added ____ ");
                                             }
                                             else if (name.equals("itunes:passage"))
                                             {
@@ -379,7 +398,7 @@ public class SermonDownloader
     //JSON version of getting sermons
     //note that there are 2 different Void types. ie void vs Void
 
-/*
+
     private class getSermonsJSON extends AsyncTask<Void, Void, Void>
     {
         @Override
@@ -391,60 +410,56 @@ public class SermonDownloader
         @Override
         protected Void doInBackground(Void... arg0)
         {
-            // Creating service handler class instance
-            ServiceHandler sh = new ServiceHandler();
+            try
+            {
+                JSONparser jsonParser = new JSONparser();
+                RSSDateParser rssDateParser = new RSSDateParser();
+                JSONObject jsonObject = jsonParser.getJSONFromUrl(Constants.jsonSermonUrl);
+                JSONArray jsonArray = jsonObject.getJSONArray("sermons");
 
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(jsonURL, ServiceHandler.GET);
+                ArrayList<Sermon> reversed_sermon_list = new ArrayList<>();
+                String latest_local_sermon = Constants.fullSermonList.get(0).getTitle();
 
-            Log.d("Response: ", "> " + jsonStr);
+                for( int i = 0; i < jsonArray.length(); i++ )
+                {
+                    JSONObject jSermon = jsonArray.getJSONObject(i);
 
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    final Sermon s = new Sermon();
 
-                    // Getting JSON Array node
-                    jsonSermonList = jsonObj.getJSONArray(TAG_SERMONS);
+                    s.setTitle(jSermon.getString("title"));
+                    s.setMp3url(jSermon.getJSONObject("enclosure").getString("url"));
+                    s.setDate(rssDateParser.parse(jSermon.getString("pubDate")));
+                    s.setPastor(jSermon.getString("author"));
+                    s.setScripture(jSermon.getString("passage"));
 
-                    // looping through All Sermons
-                    for (int i = 0; i < jsonSermonList.length(); i++)
+                    if( jSermon.getJSONObject("event").has("name") )
                     {
-                        JSONObject js = jsonSermonList.getJSONObject(i);
-
-                        String title = js.getString(TAG_TITLE);
-                        String pastor = js.getString(TAG_SPEAKER);
-                        String date = js.getString(TAG_DATE);
-                        String mp3URL = js.getString(TAG_FILENAME);
-                        String scripture = js.getString(TAG_SCRIPTURE);
-                        String event = js.getString(TAG_EVENT);
-
-
-                        //create new sermon object
-                        final Sermon s = new Sermon();
-                        s.setTitle(title);
-                        s.setPastor(pastor);
-                        s.setSDate(date);
-                        s.setMp3url(mp3URL);
-                        s.setScripture(scripture);
-                        s.setEvent(event);
-
-
-
-                        getActivity().runOnUiThread(new Runnable(){
-                            public void run()
-                            {
-                                //add sermon into SermonAdapter (Array Adapter)
-                                mSermonAdapter.insert(s, mSermonAdapter.getCount());
-                            }
-                        });
-
+                        s.setEvent(jSermon.getJSONObject("event").getString("name"));
                     }
-                    //mSermonAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    if( jSermon.getJSONObject("series").has("name") )
+                    {
+                        s.setSeries(jSermon.getJSONObject("series").getString("name") );
+                    }
+
+                    if(s.getTitle().equals(latest_local_sermon))
+                        break;
+
+
+                    reversed_sermon_list.add(s);
                 }
-            } else {
-                Log.e("ServiceHandler", "Couldn't get any data from the url");
+
+                //Constants.fullSermonList.add(0, );
+
+                for( int i = reversed_sermon_list.size() - 1; i >= 0; i --)
+                {
+                    Constants.fullSermonList.add(0, reversed_sermon_list.get(i));
+                }
+
+
+            }
+            catch ( Exception e )
+            {
+                e.printStackTrace();
             }
 
             return null;
@@ -454,10 +469,9 @@ public class SermonDownloader
         @Override
         protected void onPostExecute(Void result)
         {
-            super.onPreExecute();
-
+            mMainPager.updateHomeView();
         }
     }
 
-*/
+
 }

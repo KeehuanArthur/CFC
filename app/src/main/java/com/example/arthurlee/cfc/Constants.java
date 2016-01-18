@@ -15,6 +15,7 @@ public class Constants
     public static String nowPlayingPassage;
     public static String nowPlayingDate;
     public static String nowPlayingUrl;
+    public static boolean sermonPlayerPaused = false;
     //note: newest is smallest
 
     public static String categoryName;
@@ -35,7 +36,8 @@ public class Constants
 
     // URLS
     public static String sermonsURL = "http://cfchome.org/sermons-json/";
-    public static String announcementsURL = "http://s3.amazonaws.com/awctestbucket1/announcements.json";
+    public static String jsonSermonUrl = "http://cfchome.org/mobile/?get=sermons-json";
+    public static String announcementsURL = "http://cfchome.org/mobile/?get=special-events-json";
     public static String announcementImagesURL = "http://s3.amazonaws.com/awctestbucket1/";
 
 
@@ -46,4 +48,5 @@ public class Constants
     public static int curAnnouncement = 0;
     public static int announcementsTotal = 0;
     public static boolean no_internet_connection;
+    public static boolean sermon_force_restart = false;
 }

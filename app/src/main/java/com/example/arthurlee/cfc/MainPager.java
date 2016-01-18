@@ -87,10 +87,9 @@ public class MainPager extends AppCompatActivity
         // set global var to say app is viewable
         Constants.viewable = true;
 
-        //Download Sermons and Announcements
-        //SermonDownloader sermonDownloader = new SermonDownloader();
-        //sermonDownloader.getSermons();
 
+
+        // Load up the sermons if there is internet connection
         if( isNetworkAvailable() )
         {
             LocalJSONManager sermonManager = new LocalJSONManager(this);
@@ -117,9 +116,9 @@ public class MainPager extends AppCompatActivity
 
 
         //set up Navigation Items (side menu)
-        mNavItems.add(new NavItem("Home", "", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
-        mNavItems.add(new NavItem("Library", "Listen online", R.drawable.abc_ic_voice_search_api_mtrl_alpha));
-        mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.abc_ic_commit_search_api_mtrl_alpha));
+        mNavItems.add(new NavItem("Home", "What's new", R.drawable.alpha_block));
+        mNavItems.add(new NavItem("Library", "Listen online", R.drawable.alpha_block));
+        mNavItems.add(new NavItem("About", "Learn about our church", R.drawable.alpha_block));
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 

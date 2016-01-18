@@ -20,6 +20,7 @@ public class Sermon
     private int mLength; //this is in ms
     private String mp3url;  //http://s3.amazonaws.com/awctestbucket1/<mp3url>
     private String mEvent;
+    private String mSeries;
     private String mScripture;
     //note make Pastor into its own class sometime in the future
 
@@ -66,6 +67,8 @@ public class Sermon
 
     }
 
+    public String getSeries() { return  mSeries; }
+
     public String getMp3url() {
         return mp3url;
     }
@@ -110,5 +113,5 @@ public class Sermon
         mScripture = scripture;
     }
 
-
+    public void setSeries( String series ) { mSeries = series; }
 }

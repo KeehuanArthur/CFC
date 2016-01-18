@@ -7,12 +7,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="10dp"
+        android:layout_height="2dp"
         android:src="@mipmap/cfclogo3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginRight="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         />
@@ -38,5 +37,11 @@
               android:layout_below="@+id/title"
               android:layout_alignParentRight="true"
               android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:src="@drawable/olive_branch"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/subTitle"/>
 
 </RelativeLayout>

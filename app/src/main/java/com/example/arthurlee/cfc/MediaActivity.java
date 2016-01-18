@@ -81,11 +81,6 @@ public class MediaActivity extends FragmentActivity {
         MainPager.analytics.getEventClient().recordEvent(testEvent);
         MainPager.analytics.getEventClient().submitEvents();
 
-        /*
-        if(MainPager.analytics != null) {
-            MainPager.analytics.getSessionClient().pauseSession();
-        }
-        */
 
         // set up text views
         mTitle = (TextView)findViewById(R.id.media_title);
@@ -143,6 +138,11 @@ public class MediaActivity extends FragmentActivity {
 
 
         mPlayButton = (ImageButton)findViewById(R.id.media_play_button);
+        if( !Constants.sermonPlayerPaused )
+            mPlayButton.setBackgroundResource( R.drawable.pause_button );
+        else
+            mPlayButton.setBackgroundResource( R.drawable.play_button );
+
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,25 +155,25 @@ public class MediaActivity extends FragmentActivity {
         mCurrentTime = (TextView)findViewById(R.id.media_current_time);
         mTotalTime = (TextView)findViewById(R.id.media_total_time);
 
-        //the seekbar is currently being updated by the SermonPlayer class b/c program needs
-        //to wait for on prepared
+
+        /**
+         * the seek bar is updated by the SermonPlayer class because the app needs to wait for
+         * the MediaPlayer to buffer and go to the onPrepared state
+         */
         final SeekBar mSeekBar = (SeekBar)findViewById((R.id.sermon_audio_seekBar));
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
                 SermonPlayer.get(MediaActivity.this, false).setPosition(seekBar.getProgress());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
 
             }
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
-                // TODO Auto-generated method stub
 
             }
         });
@@ -198,21 +198,6 @@ public class MediaActivity extends FragmentActivity {
         if(mgr != null) {
             mgr.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
-
-
-        // set up the notification center controls via android service
-        final Context baseContext = getApplicationContext();
-        Intent intent = new Intent( baseContext, DropdownControls.class );
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, mSermonTitle);
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mSpeakerName);
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, mSermonDate);
-        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, mSermonScripture);
-
-        intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
-
-        getApplicationContext().startService(intent);
-
-
 
         /**
          * Start the sermon player when the new activity is created
@@ -253,7 +238,8 @@ public class MediaActivity extends FragmentActivity {
     }
 
     /**
-     *
+     * Initially the play_pause_button is invisible and there is only a buffering circle
+     * this function removes the buffering circle and makes the play_pause_button visible
      */
     public void enable_play_pause_button()
     {
@@ -262,4 +248,24 @@ public class MediaActivity extends FragmentActivity {
         loading_circle.setVisibility(View.GONE);
     }
 
+    /**
+     * set up the notification controller. This function is called in SermonPlayer.
+     *
+     * This used to be in the onCreate portion of MediaActivity but there's case when user closes
+     * the notification controller then presses play so this function should be called by the
+     * play function of the SermonPlayer
+     */
+    public void activate_notification_controller()
+    {
+        final Context baseContext = getApplicationContext();
+        Intent intent = new Intent( baseContext, DropdownControls.class );
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_TITLE, mSermonTitle);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASTOR, mSpeakerName);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_DATE, mSermonDate);
+        intent.putExtra(DropdownControls.ACTION_NOTIFICATION_EXTRA_PASSAGE, mSermonScripture);
+
+        intent.setAction(DropdownControls.ACTION_NOTIFICATION_NULL);
+
+        getApplicationContext().startService(intent);
+    }
 }

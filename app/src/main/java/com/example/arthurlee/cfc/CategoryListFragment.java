@@ -47,7 +47,7 @@ public class CategoryListFragment extends ListFragment
                 populateSeries();
                 break;
 
-            case("Events"):
+            case("Event"):
                 populateEvents();
                 break;
 

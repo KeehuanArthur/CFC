@@ -8,4 +8,6 @@
     <color name="green">#43444c</color>
     <color name="white">#FFFFFF</color>
     <color name="midGray">#aaaaaa</color>
+    <color name="mainText">#333333</color>
+    <color name="subText">#737373</color>
 </resources>

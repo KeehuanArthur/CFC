@@ -2,6 +2,8 @@ package com.example.arthurlee.cfc;
 
 /**
  * Created by arthurlee on 7/30/15.
+ *
+ * used for parsing online JSON files
  */
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

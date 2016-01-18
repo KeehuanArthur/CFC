@@ -25,7 +25,12 @@
     <string name="notification_close_button">Notification close</string>
 
     <string name="latest_sermons">Latest Sermons</string>
-    <string name="newest_sermon">Newest Sermon</string>
-    <string name="announcements">Announcements</string>
+    <string name="newest_sermon">Latest Sermon</string>
+
+    <string name="announcements">Upcoming Events</string>
+    <string name="announcement_title">Title</string>
+    <string name="announcement_date">Date</string>
+    <string name="announcement_time">Time</string>
+    <string name="announcement_location">Location</string>
 
 </resources>

@@ -84,7 +84,7 @@ public class LibraryFragment extends ListFragment
                 break;
 
             case 2:
-                Constants.categoryName = "Events";
+                Constants.categoryName = "Event";
                 break;
 
             case 3:

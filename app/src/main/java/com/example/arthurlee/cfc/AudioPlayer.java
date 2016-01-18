@@ -78,16 +78,12 @@ public class AudioPlayer extends Object
             //mediaPlayer.prepare(); // might take long! (for buffering, etc)   //@@
             mPlayer.prepareAsync();
         } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (SecurityException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block///
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
