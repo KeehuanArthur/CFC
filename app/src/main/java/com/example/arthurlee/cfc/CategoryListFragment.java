@@ -27,11 +27,10 @@ public class CategoryListFragment extends ListFragment
     {
         super.onCreate(savedInstanceState);
 
-        Log.d("Category Fragment", "starting fragment");
-
-
         mCategoryItemsList = new ArrayList<String>();
         mCategoryItemsAdapter = new ArrayAdapter(getActivity().getBaseContext(), R.layout.list_item_single_text_view, R.id.single_text_view);
+
+        getActivity().setTitle(Constants.categoryName);
 
         switch (Constants.categoryName)
         {

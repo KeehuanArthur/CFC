@@ -51,4 +51,5 @@ public class Constants
     public static int announcementsTotal = 0;
     public static boolean no_internet_connection;
     public static boolean sermon_force_restart = false;
+    public static boolean sermon_active = false;    // if there is a sermon playing or on pause
 }

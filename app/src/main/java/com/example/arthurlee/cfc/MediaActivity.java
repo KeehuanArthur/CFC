@@ -245,7 +245,7 @@ public class MediaActivity extends FragmentActivity {
     {
         mPlayButton.setVisibility(View.VISIBLE);
         RelativeLayout loading_circle = (RelativeLayout)findViewById(R.id.sermon_loading_circle);
-        loading_circle.setVisibility(View.GONE);
+        loading_circle.setVisibility(View.INVISIBLE);
     }
 
     /**

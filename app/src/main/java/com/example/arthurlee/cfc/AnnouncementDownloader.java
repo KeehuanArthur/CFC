@@ -198,7 +198,6 @@ public class AnnouncementDownloader
                     a.setImage(getBitmapFromURL(img_scr));
 
                     Constants.announcementsList.add(a);
-                    Log.d("announcement added", a.getTitle());
                 }
 
                 Constants.announcementsTotal = jsonArray.length();
@@ -207,8 +206,6 @@ public class AnnouncementDownloader
             catch (Exception e)
             {
                 e.printStackTrace();
-                Log.d("announcement down", "failed download -------------");
-
             }
 
 

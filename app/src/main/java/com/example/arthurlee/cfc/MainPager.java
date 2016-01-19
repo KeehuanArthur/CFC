@@ -237,7 +237,6 @@ public class MainPager extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu_main_pager, menu);
         //setTitle("CFC Home");
 
-
         return true;
     }
 
@@ -298,7 +297,7 @@ public class MainPager extends AppCompatActivity
              */
             if( SermonPlayer.get(MainPager.this.getApplicationContext(), true) != null)
             {
-                if(!SermonPlayer.get(MainPager.this.getApplicationContext(), true).isPlaying())
+                if(!SermonPlayer.get(MainPager.this.getApplicationContext(), true).isActive())
                 {
                     Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
                 }
@@ -349,12 +348,6 @@ public class MainPager extends AppCompatActivity
                 break;
 
             case 1:
-
-                for( int i = 0; i < 5; i ++ )
-                {
-                    Log.d("Test sermons", Constants.fullSermonList.get(i).getTitle());
-                }
-
                 libraryFragment = new LibraryFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.mainContent, libraryFragment)
@@ -407,8 +400,6 @@ public class MainPager extends AppCompatActivity
 
     //inner classes
     //-----------------------------------------------------------------------------
-
-
 
     class NavItem {
         String mTitle;

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:background="#eeeeee"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
@@ -12,6 +11,7 @@
         android:layout_gravity="center"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
         card_view:cardBackgroundColor="#ffffff"
         card_view:cardMaxElevation="4dp"
         card_view:cardUseCompatPadding="true"

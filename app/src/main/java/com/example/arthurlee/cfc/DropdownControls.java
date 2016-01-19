@@ -70,11 +70,6 @@ public class DropdownControls extends Service
 
     }
 
-    public void onDestory()
-    {
-
-    }
-
 
     private void handleIntent( Intent intent )
     {

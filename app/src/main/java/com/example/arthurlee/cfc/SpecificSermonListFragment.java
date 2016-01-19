@@ -30,6 +30,7 @@ public class SpecificSermonListFragment extends ListFragment
         mSermonAdapter = new SermonAdapter(mSermonArrayList, getActivity());
         setListAdapter(mSermonAdapter);
 
+        getActivity().setTitle(Constants.searchFor);
     }
 
     @Override

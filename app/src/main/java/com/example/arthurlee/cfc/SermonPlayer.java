@@ -12,7 +12,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,9 +27,7 @@ public class SermonPlayer extends Object {
     private static Context sAppContext;
     private MediaPlayer mMediaPlayer;
     private String mp3Url;
-    private UUID curUUID;
     private Handler mHandler = new Handler();
-    private boolean mForceRestart;
     Runnable updateSeekbar;
 
     private TextView mCurrentTime;
@@ -49,7 +46,6 @@ public class SermonPlayer extends Object {
     private SermonPlayer(Context appContext)
     {
         sAppContext = appContext;
-        //curUUID = UUID.randomUUID();
         //sSermonPlayer.mMediaPlayer = new MediaPlayer();
     }
 
@@ -61,10 +57,7 @@ public class SermonPlayer extends Object {
         if(sSermonPlayer == null)
         {
             sSermonPlayer = new SermonPlayer(c);
-            sSermonPlayer.curUUID = UUID.randomUUID();
             sSermonPlayer.mMediaPlayer = new MediaPlayer();
-            sSermonPlayer.mForceRestart = false;
-            Log.d("Constructor called", "Constructor called------------------------");
         }
 
         if(!fromService)
@@ -100,8 +93,7 @@ public class SermonPlayer extends Object {
              * this checks if user is clicking the same sermon. If user is, you dont need to go though the
              * initialization process again
              */
-            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || sSermonPlayer.mForceRestart
-                    || Constants.sermon_force_restart) {
+            if(sSermonPlayer.mp3Url == null || !(sSermonPlayer.mp3Url).equals(url) || Constants.sermon_force_restart) {
 
                 sSermonPlayer.mp3Url = url;
 
@@ -109,7 +101,7 @@ public class SermonPlayer extends Object {
                 mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
                 sSermonPlayer.mMediaPlayer = new MediaPlayer();
                 sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                sSermonPlayer.mForceRestart = false;
+                Constants.sermon_force_restart = false;
 
                 Constants.sermon_buffering = true;
 
@@ -281,22 +273,17 @@ public class SermonPlayer extends Object {
             sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
             sSermonPlayer.mMediaPlayer.release();
             sSermonPlayer.mMediaPlayer = null;
-            sSermonPlayer.mForceRestart = true;
+            Constants.sermon_force_restart = true;
         }
     }
 
 
     public void playPause(Boolean forcePlay, Boolean forcePause)
     {
+        Log.d("pausePlay", "force restart: " + Constants.sermon_force_restart );
 
-        Log.d("Force Restart Value", Boolean.toString(sSermonPlayer.mForceRestart));
-
-        if (sSermonPlayer.mMediaPlayer != null && !sSermonPlayer.mForceRestart)
+        if (sSermonPlayer.mMediaPlayer != null && !Constants.sermon_force_restart)
         {
-
-
-            Log.d("pauseplayfunction", "entered wrong if statement");
-
             if (sSermonPlayer.mMediaPlayer.isPlaying() || forcePause)
             {
                 sSermonPlayer.mMediaPlayer.pause();
@@ -336,7 +323,6 @@ public class SermonPlayer extends Object {
         }
         else
         {
-            Log.d("play function", "start ");
             play(mp3Url, mSeekBar, mCurrentTime, mTotalTime, mPlayPauseButton);
             Constants.sermonPlayerPaused = false;
         }
@@ -354,10 +340,22 @@ public class SermonPlayer extends Object {
         }
     }
 
+    /**
+     * detects if a sermon is playing or not
+     * @return
+     */
     public boolean isPlaying()
     {
         if( mMediaPlayer != null )
             return mMediaPlayer.isPlaying();
+        else
+            return false;
+    }
+
+    public boolean isActive()
+    {
+        if( mMediaPlayer != null )
+            return true;
         else
             return false;
     }
