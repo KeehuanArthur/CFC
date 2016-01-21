@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -21,6 +22,8 @@ import android.widget.RemoteViews;
  */
 public class DropdownControls extends Service
 {
+    private String TAG = "DropDownControls";
+
     public static final String ACTION_NOTIFICATION_PLAY_PAUSE = "action_notification_playpause";
     public static final String ACTION_NOTIFICATION_CLOSE = "action_notification_close";
     public static final String ACTION_NOTIFICATION_CLICKSELF = "action_notification_clickself";
@@ -37,16 +40,22 @@ public class DropdownControls extends Service
     private String mDate;
     private String mPassage;
 
-    private boolean mIsPlaying = SermonPlayer.get(getBaseContext(), true).isPlaying();
+    private boolean mIsPlaying = SermonPlayer.get(null, this).isPlaying();
     private NotificationManager mManager;
     private RemoteViews mCustomRemoteView;
     Notification mSermonController;
 
+
+    /**
+     * note: this function is called every time anything in the notification controller is touched by the user
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         handleIntent(intent);
+
         return super.onStartCommand(intent, flags, startId);
+
     }
 
 
@@ -59,17 +68,25 @@ public class DropdownControls extends Service
     @Override
     public void onCreate()
     {
-
+        // call this so that the Sermon Player singleton can get the DropDownControls context
+        SermonPlayer.get(null, this);
     }
 
     // this is used to remove the dropdown notification controls from the notifications tray after
     // removing the app from the recent apps list
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        mManager.cancelAll();
-
+        if( mManager != null )
+            mManager.cancelAll();
     }
 
+    @Override
+    public void onDestroy()
+    {
+        if( mManager != null )
+            mManager.cancelAll();
+    }
 
     private void handleIntent( Intent intent )
     {
@@ -80,41 +97,41 @@ public class DropdownControls extends Service
             //mDate = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_DATE);
             mPassage = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASSAGE);
 
+            // handle notification button control inputs
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_PLAY_PAUSE))
             {
-                SermonPlayer.get(getApplicationContext(), true).playPause(false, false);
+                SermonPlayer.get( null, this ).playPause(false, false);
                 updateNotification();
             }
-            else if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
-            {
-                mIsPlaying = false;
-                showNotification(mIsPlaying);
-            }
-
             else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLOSE))
             {
                 /**
                  * set sermon_force_restart here because if notification controller is closed while user
                  * is at MediaActivity, you want sermon to restart when user presses play again
                  */
-                SermonPlayer.get(getBaseContext(),true).stop();
-                Constants.sermon_force_restart = true;
+                if( SermonPlayer.get( null, this ).isActive() )
+                {
+                    SermonPlayer.get( null, this ).stop();
+                    Constants.sermon_force_restart = true;
+                }
                 mManager.cancelAll();
             }
-
             else if(intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_CLICKSELF))
             {
                 // only restart the activity if the app is not viewable
                 if( !Constants.viewable )
                 {
                     Intent restartIntent = new Intent(getBaseContext(), MainPager.class);
-                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(restartIntent);
                 }
             }
-
+            else if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
+            {
+                Log.d(TAG, "ACITON_NOTIFICATION_NULL case in intent handler---------------");
+                showNotification(false);
+            }
         }
-
     }
 
 
@@ -146,9 +163,20 @@ public class DropdownControls extends Service
     }
 
 
-    private void updateNotification()
+    public void updateNotification()
     {
-        if( SermonPlayer.get(getBaseContext(), true).isPlaying() )
+        /**
+         * for some reason mCustomRemoteView becomes null after you play sermon then open a bunch of different
+         * apps...
+         */
+        if( mCustomRemoteView == null )
+        {
+            Log.d(TAG, "mCustomRemoteView was null-----------");
+            //mCustomRemoteView = getExpandedView( mIsPlaying );
+            showNotification( mIsPlaying );
+        }
+
+        if( SermonPlayer.get( null, this ).isPlaying() )
         {
             mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button );
         }
@@ -164,6 +192,9 @@ public class DropdownControls extends Service
     private void displayNotification()
     {
         mManager = (NotificationManager)getSystemService( Context.NOTIFICATION_SERVICE );
+
+        if( mManager == null)
+            Log.d(TAG, "bad notification manager");
         mManager.notify(1, mSermonController);
     }
 

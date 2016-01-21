@@ -23,12 +23,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class SermonPlayer extends Object {
 
+    private static String TAG = "SermonPlayer";
     private static SermonPlayer sSermonPlayer;
-    private static Context sAppContext;
+
+    // maybe mediaActivityContext and dropDownControlsContext shouldn't be static..
+
+    private static Context sMediaActivityContext;
+    private static Context sDropDownControlsContext;
     private MediaPlayer mMediaPlayer;
     private String mp3Url;
     private Handler mHandler = new Handler();
     Runnable updateSeekbar;
+
+    private boolean isPlaying;  // MediaPlayer.isPlaying() doesn't keep track of if player is paused or not so we need this
 
     private TextView mCurrentTime;
     private TextView mTotalTime;
@@ -43,26 +50,41 @@ public class SermonPlayer extends Object {
     }
 
     //private constructor for singleton
-    private SermonPlayer(Context appContext)
+    private SermonPlayer(Context mediaActivityContext, Context dropDownControlsContext)
     {
-        sAppContext = appContext;
-        //sSermonPlayer.mMediaPlayer = new MediaPlayer();
+        sMediaActivityContext = mediaActivityContext;
+        sDropDownControlsContext = dropDownControlsContext;
     }
 
+    /**
+     * Singleton get()
+     *
+     * to get singleton, you need to pass in the MediaPlayer Context and the DropDownControls Context
+     * or null if they are not available from the class that get() is being called from
+     *
+     * @return Singleton instance of SermonPlayer
+     */
 
-    // call this function to use singleton
-    // make sure to distinguish if call is from service or not
-    public static SermonPlayer get(Context c, boolean fromService)
+    public static SermonPlayer get(Context mediaActivityContext, Context dropDownControlsContext)
     {
         if(sSermonPlayer == null)
         {
-            sSermonPlayer = new SermonPlayer(c);
+            sSermonPlayer = new SermonPlayer(mediaActivityContext, dropDownControlsContext);
             sSermonPlayer.mMediaPlayer = new MediaPlayer();
         }
 
-        if(!fromService)
+        /**
+         * you may want to make sMediaActivityContext update regardless if its null or not. might save processing power if
+         * app is in background so you are not constantly updating a view that is not visible
+         */
+
+        if( mediaActivityContext != null )
         {
-            sAppContext = c;
+            sMediaActivityContext = mediaActivityContext;
+        }
+        if( dropDownControlsContext != null )
+        {
+            sDropDownControlsContext = dropDownControlsContext;
         }
 
         return sSermonPlayer;
@@ -73,7 +95,7 @@ public class SermonPlayer extends Object {
      * play()
      *
      * this is called only when you open a new sermon, not when you want to play or pause a sermon.
-     * there is a seporate playpause method
+     * there is a separate  playpause method
      * this is more like an initialization function
      *
      * This function is called when a Sermon activity starts but also checks if user clicked on already
@@ -98,7 +120,7 @@ public class SermonPlayer extends Object {
                 sSermonPlayer.mp3Url = url;
 
                 sSermonPlayer.stop();
-                mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
                 sSermonPlayer.mMediaPlayer = new MediaPlayer();
                 sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 Constants.sermon_force_restart = false;
@@ -107,7 +129,6 @@ public class SermonPlayer extends Object {
 
                 //to switch between the JSON and XML version, change setDataSource Parameter
                 mp3Url = url;
-                String fullUrl = "http://s3.amazonaws.com/awctestbucket1/" + url;
 
                 try {
                     sSermonPlayer.mMediaPlayer.setDataSource(url);
@@ -152,7 +173,7 @@ public class SermonPlayer extends Object {
                         mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                             @Override
                             public void onBufferingUpdate(MediaPlayer mp, final int percent) {
-                                ((Activity)sAppContext).runOnUiThread(new Runnable(){
+                                ((Activity)sMediaActivityContext).runOnUiThread(new Runnable(){
                                     @Override
                                     public void run(){
                                         if (percent < 100) {
@@ -167,10 +188,12 @@ public class SermonPlayer extends Object {
                         });
                         */
                         // enable the play button
-                        ((MediaActivity)sAppContext).enable_play_pause_button();
+                        ((MediaActivity)sMediaActivityContext).enable_play_pause_button();
                         Constants.sermon_buffering = false;
 
                         updateProgress();
+
+                        isPlaying = true;
                     }
 
                 });
@@ -192,7 +215,7 @@ public class SermonPlayer extends Object {
                     }
                 });
 
-                ((MediaActivity)sAppContext).activate_notification_controller();
+                ((MediaActivity)sMediaActivityContext).activate_notification_controller();
             }
 
             else
@@ -217,10 +240,9 @@ public class SermonPlayer extends Object {
             }
     }
 
-
     public void updateProgress()
     {
-        ((Activity)sAppContext).runOnUiThread(new Runnable() {
+        ((Activity)sMediaActivityContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(sSermonPlayer.mMediaPlayer != null)
@@ -251,14 +273,14 @@ public class SermonPlayer extends Object {
                 else
                 {
                     Log.d("Sermon Player", "Sermon Player just died");
-                    sAppContext.getApplicationContext().stopService(notificationIntent);
+                    // change this to sDropdownControlContext
+                    sMediaActivityContext.getApplicationContext().stopService(notificationIntent);
+                    //((DropdownControls)sDropDownControlsContext).
+                    sDropDownControlsContext = null;
 
                 }
             }
         });
-
-        //Log.d("progress update", "attempted--------------------------"+ Integer.toString(mMediaPlayer.getCurrentPosition())
-        //        +"/"+Integer.toString(mMediaPlayer.getDuration()));
 
 
         //update seekbar every 1 second
@@ -266,6 +288,10 @@ public class SermonPlayer extends Object {
 
     }
 
+
+
+    // todo the bottom play button should be brought out from the sMediaActivityView context and
+    // check if the mediacontext is null or not
     public void stop()
     {
         if (sSermonPlayer.mMediaPlayer != null)
@@ -280,29 +306,28 @@ public class SermonPlayer extends Object {
 
     public void playPause(Boolean forcePlay, Boolean forcePause)
     {
-        Log.d("pausePlay", "force restart: " + Constants.sermon_force_restart );
-
-        if (sSermonPlayer.mMediaPlayer != null && !Constants.sermon_force_restart)
+        if (sSermonPlayer.mMediaPlayer != null && !Constants.sermon_force_restart )
         {
-            if (sSermonPlayer.mMediaPlayer.isPlaying() || forcePause)
+            if (sSermonPlayer.mMediaPlayer.isPlaying() )
             {
                 sSermonPlayer.mMediaPlayer.pause();
 
-
-                ((Activity)sAppContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
-                        Constants.sermonPlayerPaused = true;
-                    }
-                });
-
+                if( sMediaActivityContext != null )
+                {
+                    ((Activity)sMediaActivityContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
+                            Constants.sermonPlayerPaused = true;
+                        }
+                    });
+                }
             }
 
             else if( forcePlay )
             {
                 sSermonPlayer.mMediaPlayer.start();
-                mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
                 Constants.sermonPlayerPaused = true;
             }
 
@@ -310,33 +335,29 @@ public class SermonPlayer extends Object {
             {
                 sSermonPlayer.mMediaPlayer.start();
 
-
-                ((Activity)sAppContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
-                        Constants.sermonPlayerPaused = false;
-                    }
-                });
-
+                if( sMediaActivityContext != null)
+                {
+                    ((Activity)sMediaActivityContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                            Constants.sermonPlayerPaused = false;
+                        }
+                    });
+                }
             }
+
+            isPlaying = !isPlaying;
         }
         else
         {
             play(mp3Url, mSeekBar, mCurrentTime, mTotalTime, mPlayPauseButton);
             Constants.sermonPlayerPaused = false;
         }
-    }
 
-    public String getCurrentUrl()
-    {
-        if(sSermonPlayer == null)
+        if( sDropDownControlsContext != null )
         {
-            return "00000";
-        }
-        else
-        {
-            return sSermonPlayer.mp3Url;
+            ((DropdownControls)sDropDownControlsContext).updateNotification();
         }
     }
 
@@ -347,17 +368,25 @@ public class SermonPlayer extends Object {
     public boolean isPlaying()
     {
         if( mMediaPlayer != null )
-            return mMediaPlayer.isPlaying();
+            return isPlaying;
         else
             return false;
     }
 
+    /**
+     * SermonPlayer.get() will never return null but the media player in the SermonPlayer might be null if nothing
+     * is playing at the moment so you can use this function to check if the media player is actually null or not
+     *
+     * the check for sDropDownControls accounts for the base case for in the beginning when the Constructor is called.
+     * the controller creates a new MediaPlayer and its not null.
+     * @return
+     */
     public boolean isActive()
     {
-        if( mMediaPlayer != null )
-            return true;
-        else
+        if( mMediaPlayer == null || sDropDownControlsContext == null )
             return false;
+        else
+            return true;
     }
 
     //position is in milliseconds

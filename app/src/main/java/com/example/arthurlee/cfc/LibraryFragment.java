@@ -1,9 +1,9 @@
 package com.example.arthurlee.cfc;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.FragmentManager;
 import android.app.ListFragment;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +15,15 @@ import java.util.ArrayList;
 
 /**
  * Created by arthurlee on 8/21/15.
+ *
+ * This is the code for the Library view of the app. Although this is a list view, the onListItemClick only is
+ * for the category items, the sermon cards have their one onClickListeners that are on the convertViews because
+ * the selection animation on the cards don't work when the click listener is on the Array Adapter instead of
+ * the individual item adapters
  */
 public class LibraryFragment extends ListFragment
 {
+    String TAG = "LibraryFragment";
     private LibraryAdapter mLibraryAdapter;
     private ArrayList<Sermon> mSermonArrayList;
 
@@ -59,14 +65,18 @@ public class LibraryFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        Log.d(TAG, "onListItemClicked() was called on position: " + position);
         if( position < 4 )
         {
             startCategoryFragment(position);
         }
+        /* this will be taken care of by the individual sermon adapters created when getView is called
+           by this class
         else
         {
             startSermonPlayer(position);
         }
+        */
     }
 
     private void startCategoryFragment(int categoryNumber)
@@ -118,7 +128,10 @@ public class LibraryFragment extends ListFragment
     }
 
 
-
+    /**
+     * ArrayAdapters calls getView() when it needs to display an item from the list but only sometimes
+     * creates a new view ie when there is a null convert view passed in.
+     */
     public class LibraryAdapter extends ArrayAdapter<Sermon>
     {
 
@@ -195,13 +208,16 @@ public class LibraryFragment extends ListFragment
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
+        public View getView(final int position, View convertView, ViewGroup parent)
         {
             //there are 4 categories and the rest are sermons
+
+            Log.d(TAG, "getView() was called with position: " + position);
 
             //If we weren't given a view, inflate one
             if(convertView == null)
             {
+                Log.d(TAG, "new convertView was created");
                 if( getItemViewType(position) == 0 )
                 {
                     convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_categories, null);
@@ -234,6 +250,14 @@ public class LibraryFragment extends ListFragment
 
                 TextView passageTextView = (TextView) convertView.findViewById(R.id.sermon_list_item_passage);
                 passageTextView.setText(s.getScripture());
+
+                convertView.findViewById(R.id.card_view).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startSermonPlayer(position);
+
+                    }
+                });
 
                 return convertView;
             }

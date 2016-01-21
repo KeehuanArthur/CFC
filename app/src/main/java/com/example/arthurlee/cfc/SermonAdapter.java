@@ -1,6 +1,7 @@
 package com.example.arthurlee.cfc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,10 +11,18 @@ import java.util.ArrayList;
 
 /**
  * Created by arthurlee on 8/19/15.
+ *
+ * This Class doesn't seem to be used. Appears once in HomeFragment but isn't used for anything..
+ * The onClickListeners seem to be created in the LibraryFragment and the HomeFragment
+ *
+ * Delete if this isn't necessary
+ *
+ * Actually its used in SpecificSermonListFragment
  */
 public class SermonAdapter extends ArrayAdapter<Sermon>
 {
     Activity mActivity;
+    String TAG = "SermonAdapter";
 
     public SermonAdapter(ArrayList<Sermon> sermons, Activity callingActivity)
     {
@@ -45,14 +54,31 @@ public class SermonAdapter extends ArrayAdapter<Sermon>
         TextView passageTextView = (TextView)convertView.findViewById(R.id.sermon_list_item_passage);
         passageTextView.setText(s.getScripture());
 
-        //buffering is called secondary progress
+        convertView.findViewById(R.id.card_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //New Activity Stuff
+                Sermon s = Constants.fullSermonList.get(0);
+                Intent i = new Intent(getContext(), MediaActivity.class);
+                i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
+                i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
+                i.putExtra(MediaActivity.EXTRA_SERMON_DATE, s.getSDate());
+                i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, s.getTitle());
+                i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, s.getScripture());
+
+                //Set Global Vars
+                Constants.nowPlayingTitle = s.getTitle();
+                Constants.nowPlayingPastor = s.getPastor();
+                Constants.nowPlayingPassage = s.getScripture();
+                Constants.nowPlayingDate = s.getSDate();
+                Constants.nowPlayingUrl = s.getMp3url();
+
+                getContext().startActivity(i);
+            }
+        });
 
 
-            /*
-            DateFormat simpleDate = new SimpleDateFormat("MMM dd, yyyy");
-            String formattedDate = simpleDate.format(s.getDate());
-            dateTextView.setText(formattedDate);
-            */
         return convertView;
 
     }

@@ -22,8 +22,8 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment
 {
+    private String TAG = "Home Fragment";
     private ArrayList<Sermon> mLatestSermonList;
-    private SermonAdapter mLatestSermonAdapter;
     private ViewPager mAnnouncementPager;
     private PagerAdapter mAnnouncementPagerAdapter;
 
@@ -66,6 +66,8 @@ public class HomeFragment extends Fragment
         mAnnouncementPagerAdapter = new AnnouncementPagerAdapter(getChildFragmentManager());
         mAnnouncementPager.setAdapter(mAnnouncementPagerAdapter);
 
+        Constants.homefragment_visible = true;
+
         return v;
     }
 
@@ -75,9 +77,21 @@ public class HomeFragment extends Fragment
     {
         super.onPause();
 
+        Log.d(TAG, "onPause() called");
+        Constants.homefragment_visible = false;
+
         Constants.curAnnouncement = 0;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        Constants.homefragment_visible = true;
+
+        Log.d(TAG, "onResume() called");
+    }
 
     private View getSermonCard(int sermonNumber, LayoutInflater inflater, ViewGroup parent)
     {
@@ -104,7 +118,6 @@ public class HomeFragment extends Fragment
         sermonCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
 
                 //New Activity Stuff
                 Sermon s = Constants.fullSermonList.get(0);

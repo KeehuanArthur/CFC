@@ -146,7 +146,7 @@ public class MediaActivity extends FragmentActivity {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SermonPlayer.get(MediaActivity.this, false).playPause(false, false);
+                SermonPlayer.get(MediaActivity.this, null).playPause(false, false);
 
             }
         });
@@ -164,7 +164,8 @@ public class MediaActivity extends FragmentActivity {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                SermonPlayer.get(MediaActivity.this, false).setPosition(seekBar.getProgress());
+                if( SermonPlayer.get(MediaActivity.this, null).isActive() )
+                    SermonPlayer.get(MediaActivity.this, null).setPosition(seekBar.getProgress());
             }
 
             @Override
@@ -206,7 +207,7 @@ public class MediaActivity extends FragmentActivity {
          * There is also a loading circle in the place of the play button initially but once the sermon
          * is buffered enough, it is replaced with the play button
          */
-        SermonPlayer.get(MediaActivity.this, false).play(mMP3URL, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
+        SermonPlayer.get(MediaActivity.this, null).play(mMP3URL, mSeekBar, mCurrentTime, mTotalTime, mPlayButton);
 
         if( !Constants.sermon_buffering )
         {

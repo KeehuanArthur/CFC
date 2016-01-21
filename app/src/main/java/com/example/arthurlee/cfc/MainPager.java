@@ -41,6 +41,7 @@ import java.util.ArrayList;
 //public class MainPager extends ActionBarActivity
 public class MainPager extends AppCompatActivity
 {
+    private String TAG = "Main Pager";
     public static MobileAnalyticsManager analytics;
 
     // fragmentManagers are used to switch between fragments in a single activity
@@ -48,8 +49,6 @@ public class MainPager extends AppCompatActivity
 
     //slide out bar stuff
     //-------------------------------------------------------------------
-    private static String TAG = MainPager.class.getSimpleName();
-
     ListView mDrawerList;
     RelativeLayout mDrawerPane;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -63,6 +62,7 @@ public class MainPager extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        Log.d("Main Pager", "Main Pager being initialized------------");
 
         /**
          * Alex's mobile analytics account number: 8415647aa5814de8b7c14b02607164b7
@@ -71,7 +71,7 @@ public class MainPager extends AppCompatActivity
          */
 
 
-        //Set up Amazon Mobile Analytics
+        //Set up Amazon Mobile Analytics   -> might wanna move this into after checking if network is available
         try {
             analytics = MobileAnalyticsManager.getOrCreateInstance(
                     this.getApplicationContext(),
@@ -82,7 +82,9 @@ public class MainPager extends AppCompatActivity
             Log.e(this.getClass().getName(), "Failed to initialize Amazon Mobile Analytics", ex);
         }
 
-        Log.d("Main Pager", "Main Pager being initialized------------");
+        // set up network state change listener. Will be used for sudden wifi access after initial update failure
+        NetworkStateReceiver networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.goAsync();
 
         // set global var to say app is viewable
         Constants.viewable = true;
@@ -95,24 +97,36 @@ public class MainPager extends AppCompatActivity
         Constants.pastoral_staff.add("Pastor Tony Thomas");
         Constants.pastoral_staff.add("Pastor Jim Han");
 
+        // start up HomeFragment
+        if( savedInstanceState == null )
+        {
+            HomeFragment homeFragment = new HomeFragment();
+            fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.mainContent, homeFragment)
+                    .commit();
+        }
+
         // Load up the sermons if there is internet connection
         if( isNetworkAvailable() )
         {
             LocalJSONManager sermonManager = new LocalJSONManager(this);
             sermonManager.parseLocalJSON();
 
-
             SermonDownloader sermonDownloader = new SermonDownloader();
             sermonDownloader.checkForNewSermons(this);
 
-
             AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
             announcementDownloader.getAnnouncements(this);
+
+            Constants.number_of_updates ++;
+            Constants.failed_update = false;
         }
         else
         {
             Toast.makeText(MainPager.this, "no connection", Toast.LENGTH_LONG).show();
             Constants.no_internet_connection = true;
+            Constants.failed_update = true;
         }
 
 
@@ -136,7 +150,8 @@ public class MainPager extends AppCompatActivity
 
 
         // Drawer Item click listeners
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItemFromDrawer(position);
@@ -181,7 +196,7 @@ public class MainPager extends AppCompatActivity
      */
     public void updateHomeView()
     {
-        if( Constants.viewable )
+        if( Constants.homefragment_visible )
         {
             fragmentManager = getFragmentManager();
             Fragment homeFragment;
@@ -291,33 +306,23 @@ public class MainPager extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_now_playing)
         {
-            /**
-             * Note: outer if statement necessary? b/c SermonPlayer is singleton so it will always
-             *       exist
-             */
-            if( SermonPlayer.get(MainPager.this.getApplicationContext(), true) != null)
+
+            if(!SermonPlayer.get(null, null).isActive())
             {
-                if(!SermonPlayer.get(MainPager.this.getApplicationContext(), true).isActive())
-                {
-                    Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
-                }
-
-                else
-                {
-                    Intent i = new Intent(this, MediaActivity.class);
-                    i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, Constants.nowPlayingPastor);
-                    i.putExtra(MediaActivity.EXTRA_MP3URL, Constants.nowPlayingUrl);
-                    i.putExtra(MediaActivity.EXTRA_SERMON_DATE, Constants.nowPlayingDate);
-                    i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, Constants.nowPlayingTitle);
-
-                    startActivity(i);
-
-                }
+                Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
             }
 
             else
             {
-                Toast.makeText(MainPager.this, "Nothing Playing", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(this, MediaActivity.class);
+                i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, Constants.nowPlayingPastor);
+                i.putExtra(MediaActivity.EXTRA_MP3URL, Constants.nowPlayingUrl);
+                i.putExtra(MediaActivity.EXTRA_SERMON_DATE, Constants.nowPlayingDate);
+                i.putExtra(MediaActivity.EXTRA_SERMON_TITLE, Constants.nowPlayingTitle);
+                i.putExtra(MediaActivity.EXTRA_SERMON_SCRIPTURE, Constants.nowPlayingPassage);
+
+                startActivity(i);
+
             }
 
             return true;

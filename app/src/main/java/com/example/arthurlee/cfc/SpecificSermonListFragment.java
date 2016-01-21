@@ -1,12 +1,8 @@
 package com.example.arthurlee.cfc;
 
 import android.app.ListFragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,6 +58,8 @@ public class SpecificSermonListFragment extends ListFragment
         }
     }
 
+    /* the click listener is handled by the individual sermon adapters in SermonAdapter. the reason why is because
+       having the listener in the ListAdapter makes the card view click animation incorrect
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -91,7 +89,7 @@ public class SpecificSermonListFragment extends ListFragment
             startActivity(i);
         }
     }
-
+       */
 
     private void searchByDate(String searchFor)
     {
