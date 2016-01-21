@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,8 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
+
 
 /**
  * Created by arthurlee on 8/12/15.
@@ -128,7 +128,7 @@ public class DropdownControls extends Service
             }
             else if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_NULL))
             {
-                Log.d(TAG, "ACITON_NOTIFICATION_NULL case in intent handler---------------");
+                //Log.d(TAG, "ACITON_NOTIFICATION_NULL case in intent handler---------------");
                 showNotification(false);
             }
         }
@@ -171,9 +171,9 @@ public class DropdownControls extends Service
          */
         if( mCustomRemoteView == null )
         {
-            Log.d(TAG, "mCustomRemoteView was null-----------");
+            //Log.d(TAG, "mCustomRemoteView was null-----------");
             //mCustomRemoteView = getExpandedView( mIsPlaying );
-            showNotification( mIsPlaying );
+            //showNotification( mIsPlaying );
         }
 
         if( SermonPlayer.get( null, this ).isPlaying() )
@@ -193,8 +193,8 @@ public class DropdownControls extends Service
     {
         mManager = (NotificationManager)getSystemService( Context.NOTIFICATION_SERVICE );
 
-        if( mManager == null)
-            Log.d(TAG, "bad notification manager");
+        //if( mManager == null)
+            //Log.d(TAG, "bad notification manager");
         mManager.notify(1, mSermonController);
     }
 

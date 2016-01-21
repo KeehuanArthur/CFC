@@ -1,9 +1,8 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -12,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 
 /**
  * Created by arthurlee on 8/17/15.
@@ -67,7 +68,7 @@ public class CategoryListFragment extends ListFragment
     {
         Constants.searchFor = mCategoryItemsAdapter.getItem(position).toString();
 
-        Log.d("CategoryList", Constants.searchFor);
+        //Log.d("CategoryList", .Constants.searchFor);
 
         FragmentManager fragmentManager = getFragmentManager();
 

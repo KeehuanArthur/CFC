@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

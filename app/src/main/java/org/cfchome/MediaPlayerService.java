@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.media.session.MediaController;
 import android.media.session.MediaSession;

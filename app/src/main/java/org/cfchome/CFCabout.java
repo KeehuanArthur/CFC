@@ -1,5 +1,4 @@
-package com.example.arthurlee.cfchome;
-
+package org.cfchome;
 
 import android.app.Fragment;
 import android.content.Intent;

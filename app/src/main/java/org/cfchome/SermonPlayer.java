@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.Activity;
 import android.content.Context;
@@ -54,6 +54,8 @@ public class SermonPlayer extends Object {
     {
         sMediaActivityContext = mediaActivityContext;
         sDropDownControlsContext = dropDownControlsContext;
+
+        Log.d(TAG, "Constructor was calleddddddd --------------");
     }
 
     /**
@@ -272,7 +274,7 @@ public class SermonPlayer extends Object {
                 }
                 else
                 {
-                    Log.d("Sermon Player", "Sermon Player just died");
+                    //Log.d("Sermon Player", "Sermon Player just died");
                     // change this to sDropdownControlContext
                     sMediaActivityContext.getApplicationContext().stopService(notificationIntent);
                     //((DropdownControls)sDropDownControlsContext).
@@ -303,6 +305,27 @@ public class SermonPlayer extends Object {
         }
     }
 
+    /**
+     * this function is to be called after the user presses back enough to exit the application. When this happens
+     * this function should clean up all parts of the singleton and prevent memory leaks
+     */
+    public void prepareForClose()
+    {
+        if( mMediaPlayer != null )
+        {
+            sSermonPlayer.mMediaPlayer.release();
+            sSermonPlayer.mMediaPlayer = null;
+        }
+        Constants.sermon_force_restart = true;
+
+        if( notificationIntent != null)
+        {
+            sMediaActivityContext.getApplicationContext().stopService(notificationIntent);
+        }
+        sMediaActivityContext = null;
+        sDropDownControlsContext = null;
+
+    }
 
     public void playPause(Boolean forcePlay, Boolean forcePause)
     {

@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +19,13 @@ import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.AnalyticsEvent;
 
+
 /**
  * Created by arthurlee on 7/25/15.
  */
 public class MediaActivity extends FragmentActivity {
+
+    private String TAG = "MediaActivity";
 
     private ImageButton mPlayButton;
     private TextView mTitle;
@@ -55,7 +58,9 @@ public class MediaActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top);
         setContentView(R.layout.activity_player);
 
@@ -75,11 +80,18 @@ public class MediaActivity extends FragmentActivity {
         Constants.nowPlayingUrl = mMP3URL;
 
 
-        AnalyticsEvent testEvent = MainPager.analytics.getEventClient().createEvent("test")
-                .withAttribute("test title", mSermonTitle);
+        /**
+         * when app returns from onStop() after a while, MainPager.analytics seems to be null b/c we only need to log
+         * this entry once anyways, just use the analytics manager once
+         */
+        if( MainPager.analytics != null )
+        {
+            AnalyticsEvent testEvent = MainPager.analytics.getEventClient().createEvent("test")
+                    .withAttribute("test title", mSermonTitle);
+            MainPager.analytics.getEventClient().recordEvent(testEvent);
+            MainPager.analytics.getEventClient().submitEvents();
+        }
 
-        MainPager.analytics.getEventClient().recordEvent(testEvent);
-        MainPager.analytics.getEventClient().submitEvents();
 
 
         // set up text views
@@ -220,7 +232,6 @@ public class MediaActivity extends FragmentActivity {
     {
         super.onPause();
 
-        Log.d("MediaActivity", "onPause was called ---------");
         Constants.viewable = false;
     }
     @Override
@@ -228,8 +239,15 @@ public class MediaActivity extends FragmentActivity {
     {
         super.onResume();
 
-        Log.d("MediaActivity", "onResume was called ----------");
         Constants.viewable = true;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        Log.d(TAG, "on stop called ----------");
     }
 
     @Override

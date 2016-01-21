@@ -1,8 +1,7 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,7 @@ public class SpecificSermonListFragment extends ListFragment
         mSermonAdapter = new SermonAdapter(mSermonArrayList, getActivity());
         setListAdapter(mSermonAdapter);
 
-        getActivity().setTitle(Constants.searchFor);
+        getActivity().setTitle(org.cfchome.Constants.searchFor);
     }
 
     @Override
@@ -47,12 +46,10 @@ public class SpecificSermonListFragment extends ListFragment
                 break;
 
             case("Event"):
-                Log.d("Specific sermon", "Event selected: " + Constants.searchFor);
                 searchByEvent(Constants.searchFor);
                 break;
 
             case("Series"):
-                Log.d("Specific sermon", "Series selected selected" + Constants.searchFor);
                 searchBySeries(Constants.searchFor);
                 break;
         }

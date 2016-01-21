@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.util.Log;
 
@@ -110,15 +110,15 @@ public class JSONparser
 
         } catch (Exception e) {
             Log.e(TAG, "Error converting result " + e.toString());
-            Log.d("JSONParser", "lines of string parsed" + linenumb);
+            //Log.d("JSONParser", "lines of string parsed" + linenumb);
         }
 
         // try parse the string to a JSON Array
         try {
             jArray = new JSONArray(json);
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing data " + e.toString());
-            Log.d("JSONParser", "lines of string parsed" + linenumb);
+            //Log.e(TAG, "Error parsing data " + e.toString());
+            //Log.d("JSONParser", "lines of string parsed" + linenumb);
 
         }
 
@@ -200,8 +200,8 @@ public class JSONparser
             json = sb.toString();
 
         } catch (Exception e) {
-            Log.e(TAG, "Error converting result " + e.toString());
-            Log.d("JSONParser", "lines of string parsed" + line_number);
+            //Log.e(TAG, "Error converting result " + e.toString());
+            //Log.d("JSONParser", "lines of string parsed" + line_number);
         }
 
 
@@ -214,13 +214,6 @@ public class JSONparser
 
             int length = json.length();
 
-            for(int i=0; i<length; i+=1024)
-            {
-                if(i+1024<length)
-                    Log.d("JSON OUTPUT", json.substring(i, i+1024));
-                else
-                    Log.d("JSON OUTPUT", json.substring(i, length));
-            }
         }
 
         // return JSON String

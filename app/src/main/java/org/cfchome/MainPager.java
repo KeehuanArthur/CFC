@@ -1,9 +1,10 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.InitializationException;
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.MobileAnalyticsManager;
 
+
 import java.util.ArrayList;
 
 
@@ -47,6 +49,9 @@ public class MainPager extends AppCompatActivity
     // fragmentManagers are used to switch between fragments in a single activity
     FragmentManager fragmentManager;
 
+    // listen for changes in wifi or cellular signals
+    NetworkStateReceiver networkStateReceiver;
+
     //slide out bar stuff
     //-------------------------------------------------------------------
     ListView mDrawerList;
@@ -62,7 +67,7 @@ public class MainPager extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        Log.d("Main Pager", "Main Pager being initialized------------");
+       Log.d(TAG, "onCreate called ---------------------");
 
         /**
          * Alex's mobile analytics account number: 8415647aa5814de8b7c14b02607164b7
@@ -82,9 +87,6 @@ public class MainPager extends AppCompatActivity
             Log.e(this.getClass().getName(), "Failed to initialize Amazon Mobile Analytics", ex);
         }
 
-        // set up network state change listener. Will be used for sudden wifi access after initial update failure
-        NetworkStateReceiver networkStateReceiver = new NetworkStateReceiver();
-        networkStateReceiver.goAsync();
 
         // set global var to say app is viewable
         Constants.viewable = true;
@@ -110,8 +112,11 @@ public class MainPager extends AppCompatActivity
         // Load up the sermons if there is internet connection
         if( isNetworkAvailable() )
         {
-            LocalJSONManager sermonManager = new LocalJSONManager(this);
-            sermonManager.parseLocalJSON();
+            if( Constants.fullSermonList.size() == 0 )
+            {
+                LocalJSONManager sermonManager = new LocalJSONManager(this);
+                sermonManager.parseLocalJSON();
+            }
 
             SermonDownloader sermonDownloader = new SermonDownloader();
             sermonDownloader.checkForNewSermons(this);
@@ -171,7 +176,7 @@ public class MainPager extends AppCompatActivity
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                Log.d(TAG, "onDrawerClosed: " + getTitle());
+                //Log.d(TAG, "onDrawerClosed: " + getTitle());
 
                 invalidateOptionsMenu();
             }
@@ -181,6 +186,8 @@ public class MainPager extends AppCompatActivity
 
         Constants.doneUpdatingAnnouncements = false;
 
+        Log.d(TAG, "sermon arraylist count: " + Constants.fullSermonList.size() );
+        Log.d(TAG, "announcement arraylist count: " + Constants.announcementsList.size() );
     }
 
     /**
@@ -204,6 +211,9 @@ public class MainPager extends AppCompatActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.mainContent, homeFragment)
                     .commit();
+
+            Log.d(TAG, "sermon arraylist count: " + Constants.fullSermonList.size());
+            Log.d(TAG, "announcement arraylist count: " + Constants.announcementsList.size() );
         }
         else
         {
@@ -239,9 +249,43 @@ public class MainPager extends AppCompatActivity
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        // set up network state change listener. Will be used for sudden wifi access after initial update failure
+        IntentFilter filter = new IntentFilter(NetworkStateReceiver.NETWORK_CONNECTED);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        networkStateReceiver = new NetworkStateReceiver();
+        registerReceiver( networkStateReceiver, filter );
+
+
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        if( networkStateReceiver != null )
+            unregisterReceiver( networkStateReceiver );
+
+        Log.d(TAG, "onStop called ------------");
+    }
+
+    @Override
     public void onBackPressed()
     {
-        getFragmentManager().popBackStack();
+        if( getFragmentManager().getBackStackEntryCount() != 0 )
+            getFragmentManager().popBackStack();
+
+
+        // close app if there's no more fragments in the back stack
+        else
+        {
+            SermonPlayer.get(null, null).prepareForClose();
+            super.onBackPressed();
+        }
     }
 
 
@@ -260,7 +304,7 @@ public class MainPager extends AppCompatActivity
     {
         super.onPause();
 
-        Log.d("MainPager", "onPause was called ---------");
+        //Log.d("MainPager", "onPause was called ---------");
         Constants.viewable = false;
     }
     @Override
@@ -268,7 +312,7 @@ public class MainPager extends AppCompatActivity
     {
         super.onResume();
 
-        Log.d("MainPager", "onResume was called ---------");
+        //Log.d("MainPager", "onResume was called ---------");
         Constants.viewable = true;
 
         if( Constants.pending_homeview_update )
@@ -376,30 +420,6 @@ public class MainPager extends AppCompatActivity
 
         // Close the drawer
         mDrawerLayout.closeDrawer(mDrawerPane);
-    }
-
-
-    /**
-     * NOTE:: this class may not be necessary anymore. using the CFCabout Fragment which is it's own
-     *        file
-     */
-
-    public static class AboutFragment extends Fragment {
-
-
-        public AboutFragment() {
-            // Required empty public constructor
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.about_fragment, container, false);
-        }
-
-
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 /*
  * Copyright 1999,2004 The Apache Software Foundation.

@@ -1,7 +1,6 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.Activity;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +50,6 @@ public class LocalJSONManager
     {
         try
         {
-            Log.d("Local JSON", "trying to parse");
             JSONObject obj = new JSONObject(loadJSONFromAsset());
             JSONArray localSermonList = obj.getJSONArray("sermons");
 
@@ -91,7 +89,6 @@ public class LocalJSONManager
                 }
 
 
-                //Log.d("LocalJSON","local sermon added " + s.getTitle());
                 Constants.fullSermonList.add(Constants.fullSermonList.size(), s);
             }
 

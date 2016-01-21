@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ public class HomeFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-        Log.d("home fragment", "home fragment has been created --------");
+        //Log.d("home fragment", "home fragment has been created --------");
     }
 
     @Override
@@ -77,7 +76,7 @@ public class HomeFragment extends Fragment
     {
         super.onPause();
 
-        Log.d(TAG, "onPause() called");
+        //Log.d(TAG, "onPause() called");
         Constants.homefragment_visible = false;
 
         Constants.curAnnouncement = 0;
@@ -90,7 +89,7 @@ public class HomeFragment extends Fragment
 
         Constants.homefragment_visible = true;
 
-        Log.d(TAG, "onResume() called");
+        //Log.d(TAG, "onResume() called");
     }
 
     private View getSermonCard(int sermonNumber, LayoutInflater inflater, ViewGroup parent)

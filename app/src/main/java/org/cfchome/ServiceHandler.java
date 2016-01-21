@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 /**
  * Created by arthurlee on 7/30/15.

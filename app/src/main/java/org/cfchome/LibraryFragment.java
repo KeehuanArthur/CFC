@@ -1,10 +1,9 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -65,7 +64,7 @@ public class LibraryFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        Log.d(TAG, "onListItemClicked() was called on position: " + position);
+        //Log.d(TAG, "onListItemClicked() was called on position: " + position);
         if( position < 4 )
         {
             startCategoryFragment(position);
@@ -113,7 +112,7 @@ public class LibraryFragment extends ListFragment
 
     private void startSermonPlayer(int sermonNumber)
     {
-        Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
+        //Log.d("starting Sermon Player", "launching form LIBRARY FRAGMENT!");
 
         //New Activity Stuff
         Sermon s = mLibraryAdapter.getItem(sermonNumber);
@@ -212,12 +211,12 @@ public class LibraryFragment extends ListFragment
         {
             //there are 4 categories and the rest are sermons
 
-            Log.d(TAG, "getView() was called with position: " + position);
+            //Log.d(TAG, "getView() was called with position: " + position);
 
             //If we weren't given a view, inflate one
             if(convertView == null)
             {
-                Log.d(TAG, "new convertView was created");
+                //Log.d(TAG, "new convertView was created");
                 if( getItemViewType(position) == 0 )
                 {
                     convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_categories, null);

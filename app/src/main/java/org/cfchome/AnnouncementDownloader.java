@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,6 +55,7 @@ public class AnnouncementDownloader
         @Override
         protected Void doInBackground(Void ... arg0)
         {
+
             try{
                 Constants.no_internet_connection = false;
                 URL url = new URL(urlString);
@@ -173,6 +174,12 @@ public class AnnouncementDownloader
         @Override
         protected Void doInBackground(Void ...arg0)
         {
+            String latest_local_announcement = null;
+            if( Constants.announcementsList.size() != 0 )
+            {
+                latest_local_announcement = Constants.announcementsList.get(0).getTitle();
+            }
+
             try
             {
                 JSONparser jsonParser = new JSONparser();
@@ -185,6 +192,10 @@ public class AnnouncementDownloader
                     final Announcement a = new Announcement();
                     JSONObject jAnnouncement = jsonArray.getJSONObject(i);
                     JSONDateParser jsonDateParser = new JSONDateParser();
+
+                    // only add new announcements
+                    if( jAnnouncement.getString("event-title").equals(latest_local_announcement) )
+                        break;
 
                     a.setTitle(jAnnouncement.getString("event-title"));
                     a.setDescription(jAnnouncement.getString("description"));
@@ -292,7 +303,7 @@ public class AnnouncementDownloader
 
                         try
                         {
-                            InputStream input = new java.net.URL(imageURL).openStream();
+                            InputStream input = new URL(imageURL).openStream();
                             bitmapImage = BitmapFactory.decodeStream(input);
                         }
                         catch (Exception e)

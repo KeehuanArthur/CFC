@@ -1,7 +1,6 @@
-package com.example.arthurlee.cfchome;
+package org.cfchome;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,7 +87,7 @@ public class SermonDownloader
 
                 updateLocalSermonList(myparser);
                 stream.close();
-                Log.d("SermonDownloader","went through update");
+                //Log.d("SermonDownloader","went through update");
             } catch (Exception e) {
                 Constants.no_internet_connection = true;
                 e.printStackTrace();
@@ -161,7 +160,7 @@ public class SermonDownloader
                                             if( name.equals("itunes:event") )
                                             {
                                                 event_found = true;
-                                                Log.d("SermonDownloader", "event found ------");
+                                                //Log.d("SermonDownloader", "event found ------");
                                             }
                                             break;
 
@@ -170,7 +169,7 @@ public class SermonDownloader
                                             break;
 
                                         case XmlPullParser.END_TAG:
-                                            Log.d("SermonDownloader", "name " + name );
+                                            //Log.d("SermonDownloader", "name " + name );
                                             String series_name = null;
                                             if( name != null && name.length() >= 12 )
                                             {
@@ -189,7 +188,6 @@ public class SermonDownloader
                                             {
                                                 s.setEvent(text);
                                                 event_found = false;
-                                                Log.d("sermon downloader", "event added ____ ");
                                             }
                                             else if (name.equals("itunes:passage"))
                                             {
@@ -447,6 +445,7 @@ public class SermonDownloader
                         s.setSeries(jSermon.getJSONObject("series").getString("name") );
                     }
 
+                    // only parse the sermons that are not in the local list
                     if(s.getTitle().equals(latest_local_sermon))
                         break;
 
@@ -464,7 +463,6 @@ public class SermonDownloader
                     reversed_sermon_list.add(s);
                 }
 
-                //Constants.fullSermonList.add(0, );
 
                 for( int i = reversed_sermon_list.size() - 1; i >= 0; i --)
                 {
