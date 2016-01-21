@@ -1,4 +1,4 @@
-package com.example.arthurlee.cfc;
+package com.example.arthurlee.cfchome;
 
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
