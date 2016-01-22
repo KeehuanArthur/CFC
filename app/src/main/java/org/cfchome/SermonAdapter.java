@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * Delete if this isn't necessary
  *
- * Actually its used in SpecificSermonListFragment
+ * Actually its used in SpecificSermonListFragment don't delete
  */
 public class SermonAdapter extends ArrayAdapter<Sermon>
 {
@@ -56,12 +56,12 @@ public class SermonAdapter extends ArrayAdapter<Sermon>
         TextView passageTextView = (TextView)convertView.findViewById(R.id.sermon_list_item_passage);
         passageTextView.setText(s.getScripture());
 
+
         convertView.findViewById(R.id.card_view).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //New Activity Stuff
-                Sermon s = Constants.fullSermonList.get(0);
                 Intent i = new Intent(getContext(), MediaActivity.class);
                 i.putExtra(MediaActivity.EXTRA_PASTOR_NAME, s.getPastor());
                 i.putExtra(MediaActivity.EXTRA_MP3URL, s.getMp3url());
