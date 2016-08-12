@@ -95,7 +95,7 @@ public class DropdownControls extends Service
             mTitle = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_TITLE);
             mPastor = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASTOR);
             //mDate = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_DATE);
-            mPassage = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASSAGE);
+            //mPassage = intent.getStringExtra(ACTION_NOTIFICATION_EXTRA_PASSAGE);
 
             // handle notification button control inputs
             if (intent.getAction().equalsIgnoreCase(ACTION_NOTIFICATION_PLAY_PAUSE))
@@ -135,6 +135,10 @@ public class DropdownControls extends Service
     }
 
 
+    /**
+     * This function is to display the notification controller for the first time
+     * @param isPlaying
+     */
     private void showNotification(boolean isPlaying)
     {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.cfclogo_se2);
@@ -163,17 +167,26 @@ public class DropdownControls extends Service
     }
 
 
+    /**
+     * This function is used to change the image of the play/pause button whenever it is clicked
+     */
     public void updateNotification()
     {
         /**
+         * BUG!!!-------
          * for some reason mCustomRemoteView becomes null after you play sermon then open a bunch of different
          * apps...
+         *
+         * would it be possible to extract the custom remote view from the instance of this class?
+         * because because if it was able to receive the onClick() that means the instanse of the remote view
+         * must still exist somewhere
          */
         if( mCustomRemoteView == null )
         {
             //Log.d(TAG, "mCustomRemoteView was null-----------");
             //mCustomRemoteView = getExpandedView( mIsPlaying );
             //showNotification( mIsPlaying );
+            ((DropdownControls)this).getCustomRemoteView();
         }
 
         if( SermonPlayer.get( null, this ).isPlaying() )
@@ -205,7 +218,7 @@ public class DropdownControls extends Service
 
         mCustomRemoteView.setTextViewText(R.id.notification_title, mTitle);
         mCustomRemoteView.setTextViewText(R.id.notification_speaker, mPastor);
-        mCustomRemoteView.setTextViewText(R.id.notification_passage, mPassage);
+//        mCustomRemoteView.setTextViewText(R.id.notification_passage, mPassage);
 
         mCustomRemoteView.setImageViewResource(R.id.notification_playpause, R.drawable.pause_button);
 
@@ -225,6 +238,11 @@ public class DropdownControls extends Service
         pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
         mCustomRemoteView.setOnClickPendingIntent(R.id.notification_controller, pendingIntent);
 
+        return mCustomRemoteView;
+    }
+
+    RemoteViews getCustomRemoteView()
+    {
         return mCustomRemoteView;
     }
 

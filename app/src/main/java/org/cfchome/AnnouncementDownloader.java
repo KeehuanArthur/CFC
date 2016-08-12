@@ -186,7 +186,7 @@ public class AnnouncementDownloader
                 JSONObject jsonObject = jsonParser.getJSONFromUrl(Constants.announcementsURL);
                 JSONArray jsonArray = jsonObject.getJSONArray("special-events");
 
-                // go through list of array and add to global announcements
+                // go through list of announcements and add to global announcements
                 for( int i = 0; i < jsonArray.length(); i++ )
                 {
                     final Announcement a = new Announcement();
@@ -203,6 +203,8 @@ public class AnnouncementDownloader
                     a.setDate( jsonDateParser.parse(jAnnouncement.getString("start-date")));
                     a.setTime(jAnnouncement.getString("time"));
 
+
+                    // TODO: remove html characters from title
 
                     String img_scr = jsonArray.getJSONObject(i).getString("large-image-url");
 

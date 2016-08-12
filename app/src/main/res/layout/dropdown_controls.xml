@@ -24,23 +24,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/notification_close_container"
-                android:layout_alignParentRight="true"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="right"
-                android:padding="5dp">
-
-                <Button
-                    android:id="@+id/notification_close"
-                    android:background="@drawable/close_button_black"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:scaleType="center"/>
-
-            </RelativeLayout>
-
 
             <TextView
                 android:id="@+id/notification_title"
@@ -51,7 +34,6 @@
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@id/notification_close_container"
                 android:layout_alignParentLeft="true"
                 android:singleLine="true"
                 />
@@ -65,29 +47,48 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:singleLine="true"
+                android:paddingBottom="10dp"
                 />
 
-            <TextView
-                android:id="@+id/notification_passage"
+
+            <ImageView
+                android:id="@+id/divider"
+                android:background="@drawable/pixel"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_below="@id/notification_speaker"
-                android:text="passage"
-                android:textColor="@color/subText"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="10dp"
-                android:singleLine="true"
-                />
+                android:gravity="center"
+                android:layout_below="@id/divider">
 
-            <ImageButton
-                android:id="@+id/notification_playpause"
-                android:background="@drawable/alpha_block"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:scaleType="fitCenter"
-                android:padding="2dp"
-                android:layout_alignParentBottom="true"
-                />
+                <ImageButton
+                    android:id="@+id/notification_playpause"
+                    android:background="@drawable/alpha_block"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:scaleType="fitStart"
+                    android:layout_marginBottom="8dp"/>
+
+                <Button
+                    android:id="@+id/notification_close"
+                    android:background="@drawable/close_button_black"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_toRightOf="@id/notification_playpause"/>
+
+
+
+            </RelativeLayout>
+
+
+
         </RelativeLayout>
 
 

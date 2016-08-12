@@ -54,9 +54,12 @@ public class LibraryFragment extends ListFragment
         super.onCreate(savedInstanceState);
         getListView().setDivider(null);
 
-        for(int i = 0; i < 25; i ++)
+        if( Constants.fullSermonList.size() != 0 )
         {
-            mLibraryAdapter.add(Constants.fullSermonList.get(i));
+            for(int i = 0; i < 25; i ++)
+            {
+                mLibraryAdapter.add(Constants.fullSermonList.get(i));
+            }
         }
     }
 

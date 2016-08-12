@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.InitializationException;
 import com.amazonaws.mobileconnectors.amazonmobileanalytics.MobileAnalyticsManager;
 
-
 import java.util.ArrayList;
 
 
@@ -92,12 +91,16 @@ public class MainPager extends AppCompatActivity
         Constants.viewable = true;
 
         // initialize pastoral staff array
-        Constants.pastoral_staff.add("Rev. Min Chung");
-        Constants.pastoral_staff.add("Rev. KJ Kim");
-        Constants.pastoral_staff.add("Rev. David Kang");
-        Constants.pastoral_staff.add("Pastor Sean Lee");
-        Constants.pastoral_staff.add("Pastor Tony Thomas");
-        Constants.pastoral_staff.add("Pastor Jim Han");
+        if( Constants.pastoral_staff.size() == 0 )
+        {
+            Constants.pastoral_staff.add("Rev. Min Chung");
+            Constants.pastoral_staff.add("Rev. KJ Kim");
+            Constants.pastoral_staff.add("Rev. David Kang");
+            Constants.pastoral_staff.add("Pastor Sean Lee");
+            Constants.pastoral_staff.add("Pastor Tony Thomas");
+            Constants.pastoral_staff.add("Pastor Jim Han");
+        }
+
 
         // start up HomeFragment
         if( savedInstanceState == null )
@@ -257,7 +260,7 @@ public class MainPager extends AppCompatActivity
         IntentFilter filter = new IntentFilter(NetworkStateReceiver.NETWORK_CONNECTED);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         networkStateReceiver = new NetworkStateReceiver();
-        registerReceiver( networkStateReceiver, filter );
+        registerReceiver(networkStateReceiver, filter);
 
 
     }
@@ -314,6 +317,18 @@ public class MainPager extends AppCompatActivity
 
         //Log.d("MainPager", "onResume was called ---------");
         Constants.viewable = true;
+
+        if( Constants.failed_update && isNetworkAvailable() )
+        {
+            SermonDownloader sermonDownloader = new SermonDownloader();
+            sermonDownloader.checkForNewSermons(this);
+
+            AnnouncementDownloader announcementDownloader = new AnnouncementDownloader();
+            announcementDownloader.getAnnouncements(this);
+
+            Constants.number_of_updates ++;
+            Constants.failed_update = false;
+        }
 
         if( Constants.pending_homeview_update )
         {

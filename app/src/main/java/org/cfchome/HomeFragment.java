@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,14 +170,15 @@ public class HomeFragment extends Fragment
              * the AnnouncementView knows which image to display by looking at the Constants.announcementNumb
              * which will be incremented each time a new AnnouncementView is made
              */
+            Log.d("announcement adapter", "getItem called in announcement pager " + Integer.toString(position) );
             return new AnnouncementView();
         }
 
         @Override
         public int getCount()
         {
+            Log.d("announcement adapter", "getCount() called");
             return Constants.announcementsTotal;
-
         }
     }
 }

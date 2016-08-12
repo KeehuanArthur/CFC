@@ -22,6 +22,9 @@ import com.amazonaws.mobileconnectors.amazonmobileanalytics.AnalyticsEvent;
 
 /**
  * Created by arthurlee on 7/25/15.
+ *
+ *
+ * This is the view that is displayed when a user clicks on a sermon
  */
 public class MediaActivity extends FragmentActivity {
 
@@ -124,7 +127,15 @@ public class MediaActivity extends FragmentActivity {
                 new_image = ContextCompat.getDrawable(this, R.drawable.pjim);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
+            case "Rev. Jim Han":
+                new_image = ContextCompat.getDrawable(this, R.drawable.pjim);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
             case "Pastor Tony Thomas":
+                new_image = ContextCompat.getDrawable(this, R.drawable.ptony);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
+            case "Rev. Tony Thomas":
                 new_image = ContextCompat.getDrawable(this, R.drawable.ptony);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
@@ -137,6 +148,10 @@ public class MediaActivity extends FragmentActivity {
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
             case "Pastor Sean Lee":
+                new_image = ContextCompat.getDrawable(this, R.drawable.psean);
+                mPastorPhoto.setImageDrawable(new_image);
+                break;
+            case "Rev. Sean Lee":
                 new_image = ContextCompat.getDrawable(this, R.drawable.psean);
                 mPastorPhoto.setImageDrawable(new_image);
                 break;
@@ -160,6 +175,8 @@ public class MediaActivity extends FragmentActivity {
             public void onClick(View v) {
                 SermonPlayer.get(MediaActivity.this, null).playPause(false, false);
 
+                Context dropDownContext = SermonPlayer.get(null, null).getDropDownControlsContext();
+                ((DropdownControls)dropDownContext).updateNotification();
             }
         });
 

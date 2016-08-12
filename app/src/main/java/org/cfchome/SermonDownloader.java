@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -49,7 +50,9 @@ public class SermonDownloader
         new getSermonsJSON().execute();
     };
 
-
+    public static String html2text(String html) {
+        return Jsoup.parse(html).text();
+    }
 
     //-------------------------------------------------------------------------------------------
     //Sermon Updater run this stuff after parsing the local list to add to the list
@@ -109,6 +112,10 @@ public class SermonDownloader
          * It looks at the current newest sermon in the list and while the sermon being checked
          * isn't the same as that new one, keep adding sermons to the list from the XML
          * this prevents an overlap from the sermons online and the sermons from the local file
+         *
+         * However, the format of the XML file thats online makes it difficult to parse some of the
+         * data entries such as the Events and Series category names so we switched to a JSON
+         * downloader which access another online JSON file
          *
          * @param parser
          */
@@ -397,12 +404,18 @@ public class SermonDownloader
     }
 
 
-
-    //-------------------------------------------------------------------------------------------
-    //JSON version of getting sermons
-    //note that there are 2 different Void types. ie void vs Void
-
-
+    /**
+     * JSON version of getting sermons
+     * note: Void and void are not the same?
+     *
+     * This is the current method of downloading the array of sermons. It downloads a JSON file from our
+     * server and adds the sermons to the global ArrayList that contains the sermons stored in a local
+     * JSON file.
+     *
+     * Because there might be an overlap of the sermons online and the sermons that are in the local
+     * JSON file, we only add sermons into the ArrayList until we see a sermon that has the Title that
+     * matches the Title of the newest sermon in the local JSON file
+     */
     private class getSermonsJSON extends AsyncTask<Void, Void, Void>
     {
         @Override
@@ -430,7 +443,7 @@ public class SermonDownloader
 
                     final Sermon s = new Sermon();
 
-                    s.setTitle(jSermon.getString("title"));
+                    s.setTitle( html2text( jSermon.getString("title")) );
                     s.setMp3url(jSermon.getJSONObject("enclosure").getString("url"));
                     s.setDate(rssDateParser.parse(jSermon.getString("pubDate")));
                     s.setPastor(jSermon.getString("author"));

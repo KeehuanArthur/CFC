@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -73,6 +75,20 @@ public class SermonPlayer extends Object {
         {
             sSermonPlayer = new SermonPlayer(mediaActivityContext, dropDownControlsContext);
             sSermonPlayer.mMediaPlayer = new MediaPlayer();
+
+            if( sMediaActivityContext != null)
+            {
+                sSermonPlayer.mMediaPlayer.setWakeMode( sMediaActivityContext.getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK );
+            }
+
+            /**
+             * in future, maybe set wifi lock too and keep lock until sermon is done buffering
+             */
+
+            /**
+             * TEST: make async task that will keep track of the life of this singleton. while cfc app is in background
+             *       open a bunch of different apps and see when the instance sSermonPlayer becomes null
+             */
         }
 
         /**
@@ -90,6 +106,15 @@ public class SermonPlayer extends Object {
         }
 
         return sSermonPlayer;
+    }
+
+    public Context getDropDownControlsContext()
+    {
+        if( sSermonPlayer != null )
+            return sDropDownControlsContext;
+
+        else
+            return null;
     }
 
 
@@ -122,7 +147,7 @@ public class SermonPlayer extends Object {
                 sSermonPlayer.mp3Url = url;
 
                 sSermonPlayer.stop();
-                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_circle);
                 sSermonPlayer.mMediaPlayer = new MediaPlayer();
                 sSermonPlayer.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 Constants.sermon_force_restart = false;
@@ -298,7 +323,7 @@ public class SermonPlayer extends Object {
     {
         if (sSermonPlayer.mMediaPlayer != null)
         {
-            sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
+            sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_circle);
             sSermonPlayer.mMediaPlayer.release();
             sSermonPlayer.mMediaPlayer = null;
             Constants.sermon_force_restart = true;
@@ -340,7 +365,7 @@ public class SermonPlayer extends Object {
                     ((Activity)sMediaActivityContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_button);
+                            sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.play_circle);
                             Constants.sermonPlayerPaused = true;
                         }
                     });
@@ -350,7 +375,7 @@ public class SermonPlayer extends Object {
             else if( forcePlay )
             {
                 sSermonPlayer.mMediaPlayer.start();
-                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                sSermonPlayer.mPlayPauseButton.setBackgroundResource(R.drawable.pause_circle);
                 Constants.sermonPlayerPaused = true;
             }
 
@@ -363,7 +388,7 @@ public class SermonPlayer extends Object {
                     ((Activity)sMediaActivityContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mPlayPauseButton.setBackgroundResource(R.drawable.pause_button);
+                            mPlayPauseButton.setBackgroundResource(R.drawable.pause_circle);
                             Constants.sermonPlayerPaused = false;
                         }
                     });
@@ -378,10 +403,13 @@ public class SermonPlayer extends Object {
             Constants.sermonPlayerPaused = false;
         }
 
+        /* maybe call this in the activity because it seems to cause crash when you have multiple apps running at the
+           same time and parts begin to
         if( sDropDownControlsContext != null )
         {
             ((DropdownControls)sDropDownControlsContext).updateNotification();
         }
+        */
     }
 
     /**
@@ -416,5 +444,35 @@ public class SermonPlayer extends Object {
     public void setPosition(int position)
     {
         sSermonPlayer.mMediaPlayer.seekTo(position);
+    }
+
+
+
+    /**
+     * TEST: make async task that will keep track of the life of this singleton. while cfc app is in background
+     *       open a bunch of different apps and see when the instance sSermonPlayer becomes null
+     */
+    private class singletonChecker extends AsyncTask<Void, Void, Void>
+    {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void ... arg0)
+        {
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+
+        }
     }
 }
